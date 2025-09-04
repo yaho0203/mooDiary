@@ -1,7 +1,8 @@
 package com.moodiary.jwt;
 
 
-import com.moodiary.repository.MemberRepository;
+
+import com.moodiary.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -40,11 +41,12 @@ public class JwtTokenFilter extends GenericFilter {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
 
-    public JwtTokenFilter(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public JwtTokenFilter(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
+
 
     // 토큰을 검증하는 필터
     @Override
@@ -59,7 +61,6 @@ public class JwtTokenFilter extends GenericFilter {
                 }
                 String jwtToken = token.substring(7);
 
-
                 SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
                 Claims claims = Jwts.parser()
                         .verifyWith(key)
@@ -67,15 +68,15 @@ public class JwtTokenFilter extends GenericFilter {
                         .parseSignedClaims(jwtToken)
                         .getPayload();
 
-                List<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-                UserDetails userDetails = new User(claims.getSubject(), "", authorities);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, jwtToken, authorities);
+                List<GrantedAuthority> authoruties = new ArrayList<>();
+                authoruties.add(new SimpleGrantedAuthority("ROLE_" + claims.get("role")));
+                UserDetails userDetails = new User(claims.getSubject(), "", authoruties);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, jwtToken, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-
+                // Member 기반 Authentication으로 교체
                 String email = claims.getSubject();
-                  com.moodiary.entity.User user = memberRepository.findByEmail(email).orElse(null);
+                com.moodiary.entity.User user = userRepository.findByEmail(email).orElse(null);
                 if (user != null) {
                     Authentication memberAuth = new UsernamePasswordAuthenticationToken(user, jwtToken, user.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(memberAuth);
