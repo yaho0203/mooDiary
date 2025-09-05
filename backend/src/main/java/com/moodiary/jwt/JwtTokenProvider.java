@@ -16,12 +16,14 @@ import java.util.Date;
 public class JwtTokenProvider {
     private final String secretKey;
     private final int expiration;
+    private final int refreshExpiration;
     private Key SECRET_KEY;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration}") int expiration) {
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration}") int expiration,@Value("{jwt.refresh-expiration") int refreshExpiration) {
         this.secretKey = secretKey;
         this.expiration = expiration;
         this.SECRET_KEY = new SecretKeySpec(java.util.Base64.getDecoder().decode(secretKey), SignatureAlgorithm.HS512.getJcaName());
+        this.refreshExpiration = refreshExpiration;
     }
 
     // 액세스 토큰 생성
@@ -41,6 +43,25 @@ public class JwtTokenProvider {
 
         return token;
     }
+
+
+    // Refresh Token 생성
+    public String createRefreshToken(Long id) {
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + refreshExpiration * 24 * 60 * 60 * 1000L); // 예: 14일
+
+        Claims claims = Jwts.claims()
+                .add("id", id)
+                .build();
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SECRET_KEY)
+                .compact();
+    }
+
 
     // 토큰에서 userId 꺼내는 헬퍼
     public Long extractUserId(String token) {
