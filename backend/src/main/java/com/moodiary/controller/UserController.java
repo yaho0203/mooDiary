@@ -3,6 +3,7 @@ package com.moodiary.controller;
 import com.moodiary.dto.UserDto;
 import com.moodiary.entity.User;
 import com.moodiary.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -21,15 +22,28 @@ public class UserController {
 
     // TODO: 사용자 관련 API 구현
     // - 회원가입
+    @PostMapping("/create")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDto.SignUpRequest signUpRequest) {
         User user = userService.createUser(signUpRequest);
         return new ResponseEntity<>(user.getId(), HttpStatus.CREATED);
     }
     // - 로그인
+    @PostMapping("/login")
     public ResponseEntity<?> userLogin(@Valid @RequestBody UserDto.LoginRequest loginRequest) {
         UserDto.TokenResponse tokenResponse = userService.userLogin(loginRequest);
         return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
     }
+
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> createRefreshToken(HttpServletRequest request) {
+        String refreshToken = request.getHeader("refresh-token");
+        UserDto.TokenResponse tokenResponse = userService.createNewAcceccToken(refreshToken);
+
+        return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
+
+    }
+
 
 
     // - 사용자 정보 조회

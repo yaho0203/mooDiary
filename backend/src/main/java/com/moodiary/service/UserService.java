@@ -2,6 +2,7 @@ package com.moodiary.service;
 
 import com.moodiary.dto.UserDto;
 import com.moodiary.entity.User;
+import com.moodiary.jwt.JwtTokenFilter;
 import com.moodiary.jwt.JwtTokenProvider;
 import com.moodiary.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -17,11 +18,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenFilter jwtTokenFilter;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider, JwtTokenFilter jwtTokenFilter) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtTokenFilter = jwtTokenFilter;
     }
 
     public User createUser(UserDto.@Valid SignUpRequest signUpRequest) {
@@ -52,17 +55,37 @@ public class UserService {
             throw new IllegalStateException("<UNK> <UNK> <UNK>.");
         }
 
-        String accessToken = jwtTokenProvider.createToken(user.getId(), user.getNickname());
-//        String refreshToken = jwtTokenProvider.createRefreshToken(user.getId(), user.getNickname());
+        String accessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getId(), user.getEmail());
 
         UserDto.TokenResponse tokenResponse = UserDto.TokenResponse.builder()
                 .accessToken(accessToken)
-                .refreshToken(null) // 아직 구현 못 함 ㅠㅠ
+                .refreshToken(refreshToken) // 아직 구현 못 함 ㅠㅠ
                 .tokenType("Bearer")
                 .expiresIn(86400000L)
                 .build();
 
         return tokenResponse;
+
+    }
+
+    public UserDto.TokenResponse createNewAccessToken(String refreshToken) {
+        // 리프레시 토큰 검증
+        if (jwtTokenFilter.validateRefreshToken(refreshToken)) {
+            Long userId = jwtTokenProvider.extractUserId(refreshToken);
+            User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("<UNK> <UNK> <UNK>."));
+            String newAccessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail());
+
+            return UserDto.TokenResponse.builder()
+                    .refreshToken(refreshToken)
+                    .accessToken(newAccessToken)
+                    .tokenType("Bearer")
+                    .expiresIn(86400000L)
+                    .build();
+        } else {
+            throw new IllegalStateException("리프레시 토큰이 만료되었습니다 다시 로그인 해주세요");
+        }
+
 
     }
 }

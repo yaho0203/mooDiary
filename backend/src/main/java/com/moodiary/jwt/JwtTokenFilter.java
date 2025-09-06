@@ -93,4 +93,24 @@ public class JwtTokenFilter extends GenericFilter {
     }
 
 
+    public boolean validateRefreshToken(String reFreshToken) {
+        try {
+            SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
+
+            Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(reFreshToken); // 여기서 exp(만료) + 서명 검증 자동 처리됨
+
+            return true;
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            // 토큰이 만료됨
+            return false;
+        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
+            // 서명 위조, 잘못된 형식 등
+            return false;
+        }
+    }
+
+
 }

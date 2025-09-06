@@ -37,7 +37,7 @@ public class JwtTokenProvider {
         String token = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() * expiration * 60 * 1000L))
+                .setExpiration(new Date(now.getTime() + expiration * 60 * 1000L))
                 .signWith(SECRET_KEY)
                 .compact();
 
@@ -46,18 +46,19 @@ public class JwtTokenProvider {
 
 
     // Refresh Token 생성
-    public String createRefreshToken(Long id) {
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + refreshExpiration * 24 * 60 * 60 * 1000L); // 예: 14일
-
+    public String createRefreshToken(Long id, String email) {
         Claims claims = Jwts.claims()
-                .add("id", id)
+                .subject(email)   // 액세스 토큰과 동일하게 subject = email
+                .add("id", id)    // id도 claim에 추가
                 .build();
+
+        Date now = new Date();
+
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(validity)
+                .setExpiration(new Date(now.getTime() + refreshExpiration * 60 * 1000L))
                 .signWith(SECRET_KEY)
                 .compact();
     }
