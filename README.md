@@ -52,8 +52,21 @@ mooDiary/
 ## 환경 설정
 
 ### 백엔드 설정
-- `backend/src/main/resources/application.yml`에서 데이터베이스 연결 정보 수정
-- OpenAI API 키 설정 필요
+1. `backend/src/main/resources/application.yml.example`을 복사하여 `application.yml` 생성:
+   ```bash
+   cd backend/src/main/resources
+   cp application.yml.example application.yml
+   ```
+
+2. `application.yml`에서 다음 정보 수정:
+   - MySQL 데이터베이스 연결 정보 (URL, 사용자명, 비밀번호)
+   - OpenAI API 키
+   - JWT 시크릿 키
+
+3. MySQL 데이터베이스 생성:
+   ```sql
+   CREATE DATABASE mooDiary CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
 
 ### 프론트엔드 설정
 - `frontend/package.json`에서 의존성 확인

@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
@@ -27,4 +29,13 @@ public class SecurityConfig {
         
         return http.build();
     }
-}
+    
+    /**
+     * 비밀번호 암호화를 위한 PasswordEncoder Bean
+     * BCrypt 알고리즘을 사용하여 비밀번호를 안전하게 암호화합니다.
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+} 

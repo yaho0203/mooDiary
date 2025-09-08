@@ -19,4 +19,40 @@ public enum EmotionType {
     public String getDescription() {
         return description;
     }
+    
+    public static EmotionType fromString(String emotionString) {
+        if (emotionString == null || emotionString.trim().isEmpty()) {
+            return NEUTRAL;
+        }
+        
+        String lowerCase = emotionString.toLowerCase().trim();
+        switch (lowerCase) {
+            case "happy":
+            case "joy":
+            case "행복":
+                return HAPPY;
+            case "sad":
+            case "슬픔":
+                return SAD;
+            case "angry":
+            case "분노":
+                return ANGRY;
+            case "depressed":
+            case "우울":
+                return DEPRESSED;
+            case "calm":
+            case "평온":
+                return CALM;
+            case "excited":
+            case "흥분":
+                return EXCITED;
+            case "anxious":
+            case "불안":
+                return ANXIOUS;
+            case "neutral":
+            case "중립":
+            default:
+                return NEUTRAL;
+        }
+    }
 }

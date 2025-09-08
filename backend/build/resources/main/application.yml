@@ -1,6 +1,8 @@
 spring:
   application:
     name: mooDiary
+  main:
+    allow-bean-definition-overriding: true
   
   datasource:
     url: jdbc:mysql://localhost:3307/moodiary?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
@@ -36,10 +38,14 @@ server:
 jwt:
   secret: your-secret-key-here-make-it-long-and-secure
   expiration: 86400000 # 24시간
+  access-token-expiration: 86400000 # 24시간 (Access Token)
+  refresh-token-expiration: 604800000 # 7일 (Refresh Token)
 
 # OpenAI 설정
 openai:
-  api-key: your-openai-api-key-here
+  api:
+    key: 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
+    url: https://api.openai.com/v1
   model: gpt-4
   max-tokens: 1000
   temperature: 0.7

@@ -53,4 +53,14 @@ public class User {
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CommunityComment> communityComments = new ArrayList<>();
+    
+    // Update methods
+    public void updateProfile(String nickname, String profileImage) {
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+    }
+    
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }

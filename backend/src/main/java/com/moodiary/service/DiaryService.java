@@ -2,6 +2,7 @@ package com.moodiary.service;
 
 import com.moodiary.dto.DiaryDto;
 import com.moodiary.entity.DiaryEntry;
+import com.moodiary.entity.EmotionType;
 import com.moodiary.entity.User;
 import com.moodiary.repository.DiaryRepository;
 import com.moodiary.repository.UserRepository;
@@ -197,13 +198,13 @@ public class DiaryService {
                 .user(user)
                 .content(request.getContent())
                 .imageUrl(request.getImageUrl())
-                .textEmotion(textAnalysis != null ? textAnalysis.getEmotion() : null)
+                .textEmotion(textAnalysis != null ? EmotionType.fromString(textAnalysis.getEmotion()) : null)
                 .textEmotionScore(textAnalysis != null ? textAnalysis.getScore() : null)
                 .textEmotionConfidence(textAnalysis != null ? textAnalysis.getConfidence() : null)
-                .facialEmotion(imageAnalysis != null ? imageAnalysis.getEmotion() : null)
+                .facialEmotion(imageAnalysis != null ? EmotionType.fromString(imageAnalysis.getEmotion()) : null)
                 .facialEmotionScore(imageAnalysis != null ? imageAnalysis.getScore() : null)
                 .facialEmotionConfidence(imageAnalysis != null ? imageAnalysis.getConfidence() : null)
-                .integratedEmotion(integratedAnalysis != null ? integratedAnalysis.getEmotion() : null)
+                .integratedEmotion(integratedAnalysis != null ? EmotionType.fromString(integratedAnalysis.getEmotion()) : null)
                 .integratedEmotionScore(integratedAnalysis != null ? integratedAnalysis.getScore() : null)
                 .integratedEmotionConfidence(integratedAnalysis != null ? integratedAnalysis.getConfidence() : null)
                 .keywords(integratedAnalysis != null ? integratedAnalysis.getKeywords() : null)
@@ -323,13 +324,13 @@ public class DiaryService {
             // 감정 분석 결과 업데이트
             diaryEntry.updateContent(request.getContent());
             diaryEntry.updateImageUrl(request.getImageUrl());
-            diaryEntry.updateTextEmotion(textAnalysis != null ? textAnalysis.getEmotion() : null);
+            diaryEntry.updateTextEmotion(textAnalysis != null ? EmotionType.fromString(textAnalysis.getEmotion()) : null);
             diaryEntry.updateTextEmotionScore(textAnalysis != null ? textAnalysis.getScore() : null);
             diaryEntry.updateTextEmotionConfidence(textAnalysis != null ? textAnalysis.getConfidence() : null);
-            diaryEntry.updateFacialEmotion(imageAnalysis != null ? imageAnalysis.getEmotion() : null);
+            diaryEntry.updateFacialEmotion(imageAnalysis != null ? EmotionType.fromString(imageAnalysis.getEmotion()) : null);
             diaryEntry.updateFacialEmotionScore(imageAnalysis != null ? imageAnalysis.getScore() : null);
             diaryEntry.updateFacialEmotionConfidence(imageAnalysis != null ? imageAnalysis.getConfidence() : null);
-            diaryEntry.updateIntegratedEmotion(integratedAnalysis != null ? integratedAnalysis.getEmotion() : null);
+            diaryEntry.updateIntegratedEmotion(integratedAnalysis != null ? EmotionType.fromString(integratedAnalysis.getEmotion()) : null);
             diaryEntry.updateIntegratedEmotionScore(integratedAnalysis != null ? integratedAnalysis.getScore() : null);
             diaryEntry.updateIntegratedEmotionConfidence(integratedAnalysis != null ? integratedAnalysis.getConfidence() : null);
             diaryEntry.updateKeywords(integratedAnalysis != null ? integratedAnalysis.getKeywords() : null);
@@ -526,7 +527,6 @@ public class DiaryService {
                 .facialEmotion(facialEmotion)
                 .integratedEmotion(integratedEmotion)
                 .keywords(keywords)
-                .analysis(analysis)
                 .build();
     }
 
@@ -571,13 +571,13 @@ public class DiaryService {
         return DiaryDto.AnalysisSummaryResponse.builder()
                 .diaryId(diaryEntry.getId())
                 .content(diaryEntry.getContent())
-                .overallEmotion(overallEmotion)
+                .overallEmotion(EmotionType.fromString(overallEmotion))
                 .overallEmotionScore(overallEmotionScore)
                 .dominantEmotion(dominantEmotion)
                 .topKeywords(topKeywords)
                 .analysisInsight(analysisInsight)
-                .createdAt(diaryEntry.getCreatedAt() != null ? diaryEntry.getCreatedAt().toString() : null)
-                .updatedAt(diaryEntry.getUpdatedAt() != null ? diaryEntry.getUpdatedAt().toString() : null)
+                .createdAt(diaryEntry.getCreatedAt())
+                .updatedAt(diaryEntry.getUpdatedAt())
                 .build();
     }
 
@@ -650,9 +650,9 @@ public class DiaryService {
      */
     private String determineDominantEmotion(DiaryEntry diaryEntry) {
         // 가장 높은 점수를 가진 감정을 우선순위로 결정
-        if (diaryEntry.getTextEmotion() != null) return diaryEntry.getTextEmotion();
-        if (diaryEntry.getFacialEmotion() != null) return diaryEntry.getFacialEmotion();
-        if (diaryEntry.getIntegratedEmotion() != null) return diaryEntry.getIntegratedEmotion();
+        if (diaryEntry.getTextEmotion() != null) return diaryEntry.getTextEmotion().name();
+        if (diaryEntry.getFacialEmotion() != null) return diaryEntry.getFacialEmotion().name();
+        if (diaryEntry.getIntegratedEmotion() != null) return diaryEntry.getIntegratedEmotion().name();
         return "분석 중";
     }
 
@@ -749,18 +749,61 @@ public class DiaryService {
                 .userId(diaryEntry.getUser().getId())
                 .content(diaryEntry.getContent())
                 .imageUrl(diaryEntry.getImageUrl())
-                .textEmotion(diaryEntry.getTextEmotion())
-                .textEmotionScore(diaryEntry.getTextEmotionScore())
-                .textEmotionConfidence(diaryEntry.getTextEmotionConfidence())
-                .facialEmotion(diaryEntry.getFacialEmotion())
-                .facialEmotionScore(diaryEntry.getFacialEmotionScore())
-                .facialEmotionConfidence(diaryEntry.getFacialEmotionConfidence())
-                .integratedEmotion(diaryEntry.getIntegratedEmotion())
-                .integratedEmotionScore(diaryEntry.getIntegratedEmotionScore())
-                .integratedEmotionConfidence(diaryEntry.getIntegratedEmotionConfidence())
-                .keywords(diaryEntry.getKeywords())
-                .createdAt(diaryEntry.getCreatedAt() != null ? diaryEntry.getCreatedAt().toString() : null)
-                .updatedAt(diaryEntry.getUpdatedAt() != null ? diaryEntry.getUpdatedAt().toString() : null)
+                .emotionAnalysis(createEmotionAnalysisResponse(diaryEntry))
+                .createdAt(diaryEntry.getCreatedAt())
+                .updatedAt(diaryEntry.getUpdatedAt())
+                .build();
+    }
+    
+    /**
+     * DiaryEntry에서 EmotionAnalysisResponse 생성
+     */
+    private DiaryDto.EmotionAnalysisResponse createEmotionAnalysisResponse(DiaryEntry diaryEntry) {
+        DiaryDto.EmotionScoreResponse textEmotion = null;
+        DiaryDto.EmotionScoreResponse facialEmotion = null;
+        DiaryDto.EmotionScoreResponse integratedEmotion = null;
+        
+        if (diaryEntry.getTextEmotion() != null) {
+            textEmotion = DiaryDto.EmotionScoreResponse.builder()
+                    .emotion(diaryEntry.getTextEmotion())
+                    .score(diaryEntry.getTextEmotionScore())
+                    .confidence(diaryEntry.getTextEmotionConfidence())
+                    .build();
+        }
+        
+        if (diaryEntry.getFacialEmotion() != null) {
+            facialEmotion = DiaryDto.EmotionScoreResponse.builder()
+                    .emotion(diaryEntry.getFacialEmotion())
+                    .score(diaryEntry.getFacialEmotionScore())
+                    .confidence(diaryEntry.getFacialEmotionConfidence())
+                    .build();
+        }
+        
+        if (diaryEntry.getIntegratedEmotion() != null) {
+            integratedEmotion = DiaryDto.EmotionScoreResponse.builder()
+                    .emotion(diaryEntry.getIntegratedEmotion())
+                    .score(diaryEntry.getIntegratedEmotionScore())
+                    .confidence(diaryEntry.getIntegratedEmotionConfidence())
+                    .build();
+        }
+        
+        List<String> keywords = new ArrayList<>();
+        if (diaryEntry.getKeywords() != null && !diaryEntry.getKeywords().trim().isEmpty()) {
+            // JSON 파싱 로직 (간단한 구현)
+            String[] keywordArray = diaryEntry.getKeywords().replace("[", "").replace("]", "").replace("\"", "").split(",");
+            for (String keyword : keywordArray) {
+                if (!keyword.trim().isEmpty()) {
+                    keywords.add(keyword.trim());
+                }
+            }
+        }
+        
+        return DiaryDto.EmotionAnalysisResponse.builder()
+                .textEmotion(textEmotion)
+                .facialEmotion(facialEmotion)
+                .integratedEmotion(integratedEmotion)
+                .keywords(keywords)
+                .timestamp(diaryEntry.getUpdatedAt())
                 .build();
     }
 }

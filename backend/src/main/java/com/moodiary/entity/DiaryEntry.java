@@ -73,4 +73,53 @@ public class DiaryEntry {
     @Column(name = "updated_at")
     @LastModifiedDate
     private LocalDateTime updatedAt;
+    
+    // Update methods
+    public void updateContent(String content) {
+        this.content = content;
+    }
+    
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+    
+    public void updateTextEmotion(EmotionType textEmotion) {
+        this.textEmotion = textEmotion;
+    }
+    
+    public void updateTextEmotionScore(Double textEmotionScore) {
+        this.textEmotionScore = textEmotionScore;
+    }
+    
+    public void updateTextEmotionConfidence(Double textEmotionConfidence) {
+        this.textEmotionConfidence = textEmotionConfidence;
+    }
+    
+    public void updateFacialEmotion(EmotionType facialEmotion) {
+        this.facialEmotion = facialEmotion;
+    }
+    
+    public void updateFacialEmotionScore(Double facialEmotionScore) {
+        this.facialEmotionScore = facialEmotionScore;
+    }
+    
+    public void updateFacialEmotionConfidence(Double facialEmotionConfidence) {
+        this.facialEmotionConfidence = facialEmotionConfidence;
+    }
+    
+    public void updateIntegratedEmotion(EmotionType integratedEmotion) {
+        this.integratedEmotion = integratedEmotion;
+    }
+    
+    public void updateIntegratedEmotionScore(Double integratedEmotionScore) {
+        this.integratedEmotionScore = integratedEmotionScore;
+    }
+    
+    public void updateIntegratedEmotionConfidence(Double integratedEmotionConfidence) {
+        this.integratedEmotionConfidence = integratedEmotionConfidence;
+    }
+    
+    public void updateKeywords(String keywords) {
+        this.keywords = keywords;
+    }
 }

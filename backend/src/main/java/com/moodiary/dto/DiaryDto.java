@@ -78,4 +78,21 @@ public class DiaryDto {
         private Double averageScore;
         private List<EmotionScoreResponse> emotionBreakdown;
     }
+    
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class AnalysisSummaryResponse {
+        private Long diaryId;
+        private String content;
+        private EmotionType overallEmotion;
+        private Double overallEmotionScore;
+        private String dominantEmotion;
+        private List<String> topKeywords;
+        private String analysisInsight;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+    }
 }

@@ -56,3 +56,8 @@ target/
 
 # Uploads
 uploads/
+
+# 민감한 설정 파일들
+backend/src/main/resources/application.yml
+backend/build/
+backend/.gradle/
