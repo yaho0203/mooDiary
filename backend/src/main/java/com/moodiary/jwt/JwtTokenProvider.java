@@ -19,10 +19,10 @@ public class JwtTokenProvider {
     private final int refreshExpiration;
     private Key SECRET_KEY;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration}") int expiration,@Value("{jwt.refresh-expiration") int refreshExpiration) {
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration}") int expiration, @Value("${jwt.access-token-expiration}") int accessExpiration, @Value("${jwt.refresh-token-expiration}") int refreshExpiration) {
         this.secretKey = secretKey;
         this.expiration = expiration;
-        this.SECRET_KEY = new SecretKeySpec(java.util.Base64.getDecoder().decode(secretKey), SignatureAlgorithm.HS512.getJcaName());
+        this.SECRET_KEY = new SecretKeySpec(java.util.Base64.getDecoder().decode(secretKey), SignatureAlgorithm.HS256.getJcaName());
         this.refreshExpiration = refreshExpiration;
     }
 

@@ -5,9 +5,9 @@ spring:
     allow-bean-definition-overriding: true
   
   datasource:
-    url: jdbc:mysql://localhost:3307/moodiary?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mysql://localhost:3306/moodiary?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
     username: root
-    password: 1234
+    password: jinwook219
     driver-class-name: com.mysql.cj.jdbc.Driver
   
   jpa:
@@ -36,7 +36,8 @@ server:
 
 # JWT 설정
 jwt:
-  secret: your-secret-key-here-make-it-long-and-secure
+  # your-secret-key-here-make-it-long-and-secure
+  secret: eW91ci1zZWNyZXQta2V5LWhlcmUtbWFrZS1pdC1sb25nLWFuZC1zZWN1cmU=
   expiration: 86400000 # 24시간
   access-token-expiration: 86400000 # 24시간 (Access Token)
   refresh-token-expiration: 604800000 # 7일 (Refresh Token)

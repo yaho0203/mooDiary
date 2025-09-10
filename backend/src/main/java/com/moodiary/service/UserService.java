@@ -88,4 +88,22 @@ public class UserService {
 
 
     }
+
+    public UserDto.TokenResponse createNewAcceccToken(String refreshToken) {
+        // 리프레시 토큰 검증
+        if (jwtTokenFilter.validateRefreshToken(refreshToken)) {
+            Long userId = jwtTokenProvider.extractUserId(refreshToken);
+            User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("<UNK> <UNK> <UNK>."));
+            String newAccessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail());
+
+            return UserDto.TokenResponse.builder()
+                    .refreshToken(refreshToken)
+                    .accessToken(newAccessToken)
+                    .tokenType("Bearer")
+                    .expiresIn(86400000L)
+                    .build();
+        } else {
+            throw new IllegalStateException("리프레시 토큰이 만료되었습니다 다시 로그인 해주세요");
+        }
+    }
 }

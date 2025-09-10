@@ -5,104 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="772598db-180d-4b43-ad1d-2ab208eba2cd" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/backend.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/MooDiaryApplication.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/config/SecurityConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/controller/CommunityController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/controller/EmotionController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/controller/UserController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto$CommentResponse$CommentResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto$CommentResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto$CreateCommentRequest$CreateCommentRequestBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto$CreateCommentRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto$CreatePostRequest$CreatePostRequestBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto$CreatePostRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto$PostDetailResponse$PostDetailResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto$PostDetailResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto$PostResponse$PostResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto$PostResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto$UpdateCommentRequest$UpdateCommentRequestBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto$UpdateCommentRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto$UpdatePostRequest$UpdatePostRequestBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto$UpdatePostRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/CommunityDto.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto$CreateDiaryRequest$CreateDiaryRequestBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto$CreateDiaryRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto$DiaryResponse$DiaryResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto$DiaryResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto$EmotionAnalysisResponse$EmotionAnalysisResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto$EmotionAnalysisResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto$EmotionScoreResponse$EmotionScoreResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto$EmotionScoreResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto$EmotionTrendResponse$EmotionTrendResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto$EmotionTrendResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto$UpdateDiaryRequest$UpdateDiaryRequestBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto$UpdateDiaryRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$Choice$ChoiceBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$Choice.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$ContentRecommendationRequest$ContentRecommendationRequestBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$ContentRecommendationRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$ContentRecommendationResponse$ContentRecommendationResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$ContentRecommendationResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$EmotionAnalysisRequest$EmotionAnalysisRequestBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$EmotionAnalysisRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$EmotionAnalysisResponse$EmotionAnalysisResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$EmotionAnalysisResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$EmotionScore$EmotionScoreBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$EmotionScore.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$Message$MessageBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$Message.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$OpenAiApiRequest$OpenAiApiRequestBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$OpenAiApiRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$OpenAiApiResponse$OpenAiApiResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$OpenAiApiResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$RecommendedContent$RecommendedContentBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$RecommendedContent.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$Usage$UsageBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto$Usage.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/OpenAiDto.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$LoginRequest$LoginRequestBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$LoginRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$SignUpRequest$SignUpRequestBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$SignUpRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$TokenResponse$TokenResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$TokenResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$UpdateProfileRequest$UpdateProfileRequestBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$UpdateProfileRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$UserResponse$UserResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$UserResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/CommunityComment$CommunityCommentBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/CommunityComment.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/CommunityPost$CommunityPostBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/CommunityPost.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/DiaryEntry$DiaryEntryBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/DiaryEntry.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/EmotionType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/RecommendedContent$ContentType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/RecommendedContent$RecommendedContentBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/RecommendedContent.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/User$UserBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/User.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/jwt/JwtTokenFilter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/jwt/JwtTokenProvider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/repository/MemberRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/service/MemberService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/service/OpenAiService$EmotionAnalysisResult$EmotionAnalysisResultBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/service/OpenAiService$EmotionAnalysisResult.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/service/OpenAiService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/jwt/JwtTokenFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/jwt/JwtTokenProvider.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/repository/MemberRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/service/MemberService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.14.3/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14.3/checksums/checksums.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.14.3/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14.3/checksums/sha1-checksums.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.14.3/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14.3/executionHistory/executionHistory.bin" afterDir="false" />
@@ -110,14 +12,39 @@
       <change beforePath="$PROJECT_DIR$/.gradle/8.14.3/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14.3/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.14.3/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14.3/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.14.3/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14.3/fileHashes/resourceHashesCache.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.5/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.5/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/config/SecurityConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/controller/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/controller/UserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/DiaryDto.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$LoginRequest$LoginRequestBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$LoginRequest$LoginRequestBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$LoginRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$LoginRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$SignUpRequest$SignUpRequestBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$SignUpRequest$SignUpRequestBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$SignUpRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$SignUpRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$TokenResponse$TokenResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$TokenResponse$TokenResponseBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$TokenResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$TokenResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$UpdateProfileRequest$UpdateProfileRequestBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$UpdateProfileRequest$UpdateProfileRequestBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$UpdateProfileRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$UpdateProfileRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$UserResponse$UserResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$UserResponse$UserResponseBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$UserResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto$UserResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/dto/UserDto.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/DiaryEntry.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/DiaryEntry.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/EmotionType.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/EmotionType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/User$UserBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/User$UserBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/entity/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/jwt/JwtTokenFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/jwt/JwtTokenFilter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/jwt/JwtTokenProvider.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/jwt/JwtTokenProvider.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/repository/MemberRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/moodiary/service/MemberService.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/reports/problems/problems-report.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/reports/problems/problems-report.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/controller/DiaryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/controller/DiaryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/jwt/JwtTokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/jwt/JwtTokenProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -174,10 +101,14 @@
     "Repository.Attach.Annotations": "false",
     "Repository.Attach.JavaDocs": "false",
     "Repository.Attach.Sources": "false",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.MooDiaryApplication.executor": "Run",
-    "git-widget-placeholder": "feature/login 리베이스 중",
+    "git-widget-placeholder": "feature/login",
     "last_opened_file_path": "/Users/macforjinwook/Desktop/mooDiary_2/mooDiary/backend/src/main/java/com/moodiary/jwt",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -198,7 +129,7 @@
       <recent name="$PROJECT_DIR$/src/main/java/com/moodiary/jwt" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.JwtTest.createToken">
+  <component name="RunManager" selected="Spring Boot.MooDiaryApplication">
     <configuration name="JwtTest.createToken" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="backend.test" />
       <option name="PACKAGE_NAME" value="" />
@@ -240,10 +171,30 @@
       <workItem from="1756947811297" duration="11122000" />
       <workItem from="1756971936019" duration="1218000" />
     </task>
+    <task id="LOCAL-00001">
+      <option name="closed" value="true" />
+      <created>1757465591763</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1757465591763</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="first commit" />

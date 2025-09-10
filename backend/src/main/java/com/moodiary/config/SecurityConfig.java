@@ -48,6 +48,10 @@ public class SecurityConfig {
     }
 
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
 //    @Bean
 //    public CorsConfigurationSource configurationSource() {
 //        CorsConfiguration configuration = new CorsConfiguration();

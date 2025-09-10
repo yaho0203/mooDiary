@@ -38,13 +38,16 @@ public class UserController {
     @PostMapping("/refresh")
     public ResponseEntity<?> createRefreshToken(HttpServletRequest request) {
         String refreshToken = request.getHeader("refresh-token");
-        UserDto.TokenResponse tokenResponse = userService.createNewAcceccToken(refreshToken);
+        UserDto.TokenResponse tokenResponse = userService.createNewAccessToken(refreshToken);
 
         return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
 
     }
 
-
+    @GetMapping("/test")
+    public String test() {
+        return "OK";
+    }
 
     // - 사용자 정보 조회
     // - 사용자 정보 수정
