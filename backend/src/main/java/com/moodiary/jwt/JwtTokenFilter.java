@@ -27,6 +27,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.security.Key;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -61,7 +62,8 @@ public class JwtTokenFilter extends GenericFilter {
                 }
                 String jwtToken = token.substring(7);
 
-                SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
+
+                SecretKey key = new SecretKeySpec(java.util.Base64.getDecoder().decode(secretKey), "HmacSHA256");
                 Claims claims = Jwts.parser()
                         .verifyWith(key)
                         .build()
@@ -93,24 +95,24 @@ public class JwtTokenFilter extends GenericFilter {
     }
 
 
-    public boolean validateRefreshToken(String reFreshToken) {
+    public boolean validateRefreshToken(String refreshToken) {
         try {
-            SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
+            SecretKey key = Keys.hmacShaKeyFor(java.util.Base64.getDecoder().decode(secretKey));
 
             Jwts.parser()
                     .verifyWith(key)
                     .build()
-                    .parseSignedClaims(reFreshToken); // 여기서 exp(만료) + 서명 검증 자동 처리됨
+                    .parseClaimsJws(refreshToken);
 
             return true;
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            // 토큰이 만료됨
             return false;
         } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
-            // 서명 위조, 잘못된 형식 등
             return false;
         }
     }
+
+
 
 
 }

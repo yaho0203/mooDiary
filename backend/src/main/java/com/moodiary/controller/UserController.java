@@ -38,6 +38,8 @@ public class UserController {
     @PostMapping("/refresh")
     public ResponseEntity<?> createRefreshToken(HttpServletRequest request) {
         String refreshToken = request.getHeader("refresh-token");
+        refreshToken = refreshToken.substring(7);
+//        System.out.println("refresh: " + refreshToken);
         UserDto.TokenResponse tokenResponse = userService.createNewAccessToken(refreshToken);
 
         return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
