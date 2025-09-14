@@ -2,10 +2,11 @@ package com.moodiary.jwt;
 
 
 
+import com.moodiary.entity.User;
+import com.moodiary.entity.UserUserDetails;
 import com.moodiary.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,21 +16,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
-import java.security.Key;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 
 /**
@@ -37,8 +31,9 @@ import java.util.List;
  * 현재 리프레시 토큰만 필터링 하는 로직만 구현
  * 추후 리프레시 토큰 추가 예정
  */
+
 @Component
-public class JwtTokenFilter extends GenericFilter {
+public class JwtTokenFilter extends OncePerRequestFilter {
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -48,20 +43,18 @@ public class JwtTokenFilter extends GenericFilter {
         this.userRepository = userRepository;
     }
 
-
-    // 토큰을 검증하는 필터
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        String token = httpServletRequest.getHeader("Authorization");
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
+        String token = request.getHeader("Authorization");
+
         try {
-            if (token != null ) {
-                if (!token.substring(0, 7).equals("Bearer ")) {
+            if (token != null) {
+                if (!token.startsWith("Bearer ")) {
                     throw new AuthenticationServiceException("not bearer type");
                 }
                 String jwtToken = token.substring(7);
-
 
                 SecretKey key = new SecretKeySpec(java.util.Base64.getDecoder().decode(secretKey), "HmacSHA256");
                 Claims claims = Jwts.parser()
@@ -70,30 +63,26 @@ public class JwtTokenFilter extends GenericFilter {
                         .parseSignedClaims(jwtToken)
                         .getPayload();
 
-                List<GrantedAuthority> authoruties = new ArrayList<>();
-                authoruties.add(new SimpleGrantedAuthority("ROLE_" + claims.get("role")));
-                UserDetails userDetails = new User(claims.getSubject(), "", authoruties);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, jwtToken, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                // Member 기반 Authentication으로 교체
+                // User 엔티티 조회
                 String email = claims.getSubject();
-                com.moodiary.entity.User user = userRepository.findByEmail(email).orElse(null);
+                User user = userRepository.findByEmail(email).orElse(null);
+
                 if (user != null) {
-                    Authentication memberAuth = new UsernamePasswordAuthenticationToken(user, jwtToken, user.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(memberAuth);
+                    // UserUserDetails로 래핑해서 Authentication 생성
+                    UserUserDetails userDetails = new UserUserDetails(user);
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails, jwtToken, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
-
-
             }
-            chain.doFilter(request, response);
-        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) { // JWT 문제만 401로 반환
+            filterChain.doFilter(request, response);
+        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
             e.printStackTrace();
-            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-            httpServletResponse.setContentType("application/json;char");
-            httpServletResponse.getWriter().write("Invalid token");}
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"error\": \"Invalid token\"}");
+        }
     }
-
 
     public boolean validateRefreshToken(String refreshToken) {
         try {
@@ -111,8 +100,6 @@ public class JwtTokenFilter extends GenericFilter {
             return false;
         }
     }
-
-
-
-
 }
+
+

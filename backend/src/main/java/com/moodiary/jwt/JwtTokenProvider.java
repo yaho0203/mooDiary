@@ -1,5 +1,6 @@
 package com.moodiary.jwt;
 
+import com.moodiary.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -27,10 +28,11 @@ public class JwtTokenProvider {
     }
 
     // 액세스 토큰 생성
-    public String createToken(Long id, String email) {
+    public String createToken(Long id, String email, Role role) {
         Claims claims = Jwts.claims()
                 .subject(email)
                 .add("id", id)
+                .add("role", role.name())
                 .build();
 
         Date now =  new Date();
@@ -46,10 +48,11 @@ public class JwtTokenProvider {
 
 
     // Refresh Token 생성
-    public String createRefreshToken(Long id, String email) {
+    public String createRefreshToken(Long id, String email, Role role) {
         Claims claims = Jwts.claims()
                 .subject(email)   // 액세스 토큰과 동일하게 subject = email
                 .add("id", id)    // id도 claim에 추가
+                .add("role", role.name())
                 .build();
 
         Date now = new Date();

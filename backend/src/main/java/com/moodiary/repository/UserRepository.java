@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
+
 import java.util.Optional;
 
 /**
@@ -48,4 +49,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return 닉네임이 존재하면 true, 존재하지 않으면 false
      */
     boolean existsByNickname(String nickname);
+
+    Optional<User> findByProviderId(String providerId);
 }

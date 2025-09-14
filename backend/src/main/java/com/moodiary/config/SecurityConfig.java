@@ -1,10 +1,12 @@
 package com.moodiary.config;
 
 import com.moodiary.jwt.JwtTokenFilter;
+import com.moodiary.service.GoogleService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,24 +29,34 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtTokenFilter jwtTokenFilter;
+    private final GoogleService googleService;
 
-    public SecurityConfig(JwtTokenFilter jwtTokenFilter) {
+    public SecurityConfig(JwtTokenFilter jwtTokenFilter, GoogleService googleService) {
         this.jwtTokenFilter = jwtTokenFilter;
+        this.googleService = googleService;
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenFilter jwtTokenFilter) throws Exception {
+        return http
+//                .authorizeHttpRequests(authz -> authz
+//                        .requestMatchers("/auth/**", "/oauth2/**", "/login/**").permitAll()  // 인증 관련 경로 허용
+//                        .anyRequest().authenticated()  // 나머지는 인증 필요
+//                )
                 .authorizeHttpRequests(authz -> authz
-                        .anyRequest().permitAll()  // 모든 요청 허용 (개발용)
+                        .anyRequest().permitAll()  // 개발용: 모든 요청 허용
                 )
-                .csrf(csrf -> csrf.disable())  // CSRF 비활성화
-                .formLogin(form -> form.disable()) // 로그인 폼 비활성화
-                .httpBasic(basic -> basic.disable()) // HTTP Basic 인증 비활성화
-                .sessionManagement(s->s.sessionCreationPolicy((SessionCreationPolicy.STATELESS))) // 세션 비활성화
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+                .csrf(AbstractHttpConfigurer::disable)  // CSRF 비활성화
+                .formLogin(AbstractHttpConfigurer::disable)  // 로그인 폼 비활성화
+                .httpBasic(AbstractHttpConfigurer::disable)  // HTTP Basic 인증 비활성화
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 세션 비활성화
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(googleService)
+                )
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
 

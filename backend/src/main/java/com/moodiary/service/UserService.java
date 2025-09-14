@@ -55,8 +55,8 @@ public class UserService {
             throw new IllegalStateException("<UNK> <UNK> <UNK>.");
         }
 
-        String accessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail());
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getId(), user.getEmail());
+        String accessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail(), user.getRole());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getId(), user.getEmail(), user.getRole());
 
         UserDto.TokenResponse tokenResponse = UserDto.TokenResponse.builder()
                 .accessToken(accessToken)
@@ -76,7 +76,7 @@ public class UserService {
         if (jwtTokenFilter.validateRefreshToken(refreshToken)) {
             Long userId = jwtTokenProvider.extractUserId(refreshToken);
             User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("<UNK> <UNK> <UNK>."));
-            String newAccessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail());
+            String newAccessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail(), user.getRole());
 
             return UserDto.TokenResponse.builder()
                     .refreshToken(refreshToken)
@@ -96,7 +96,7 @@ public class UserService {
         if (jwtTokenFilter.validateRefreshToken(refreshToken)) {
             Long userId = jwtTokenProvider.extractUserId(refreshToken);
             User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("<UNK> <UNK> <UNK>."));
-            String newAccessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail());
+            String newAccessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail(), user.getRole());
 
             return UserDto.TokenResponse.builder()
                     .refreshToken(refreshToken)
