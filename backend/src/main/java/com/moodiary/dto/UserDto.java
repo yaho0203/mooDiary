@@ -15,6 +15,8 @@ public class UserDto {
         private String email;
         private String password;
         private String nickname;
+        private String phone;
+        private String username;
         private String profileImage;
     }
     
@@ -63,7 +65,7 @@ public class UserDto {
         private String tokenType;
         private Long expiresIn;
     }
-    
+
     @Getter
     @Setter
     @NoArgsConstructor
