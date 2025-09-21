@@ -11,7 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +28,9 @@ public class OpenAiService {
 
     @Value("${openai.api.key}")
     private String apiKey;
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
@@ -107,11 +114,24 @@ public class OpenAiService {
                  
                  텍스트: %s
                  
-                 감정 타입: 행복, 슬픔, 분노, 평온, 우울, 기쁨, 불안, 화남, 만족, 실망
-                 점수: 0-100 (0=매우 부정적, 100=매우 긍정적)
-                 신뢰도: 0-100 (0=낮음, 100=높음)
+                 다음 JSON 형식으로만 응답하세요:
+                 {
+                   "emotion": "감정명",
+                   "description": "텍스트의 감정과 내용에 대한 설명"
+                 }
                  
-                 JSON 형식으로만 응답하세요.
+                 감정명은 다음 중 하나를 선택하세요:
+                 - happy (행복)
+                 - sad (슬픔)
+                 - angry (분노)
+                 - calm (평온)
+                 - depressed (우울)
+                 - joyful (기쁨)
+                 - anxious (불안)
+                 - frustrated (화남)
+                 - satisfied (만족)
+                 - disappointed (실망)
+                 - neutral (중립)
                  """, text);
 
             log.info("생성된 프롬프트: {}", prompt);
@@ -173,24 +193,58 @@ public class OpenAiService {
      * @since 2025-09-03
      */
     public EmotionAnalysisResult analyzeImageEmotion(String imageUrl) {
-        log.info("이미지 감정 분석 시작 - 이미지 URL: {}", imageUrl);
+        log.info("=== 이미지 감정 분석 시작 ===");
+        log.info("이미지 URL: {}", imageUrl);
 
         try {
-                         // OpenAI Vision API 요청 데이터 구성
-             String prompt = """
-                 이 이미지의 표정을 분석하여 감정을 판단해주세요.
-                 
-                 JSON 응답만 반환하세요.
-                 """;
+            // OpenAI API 요청 데이터 구성
+            String prompt = String.format("""
+                다음 이미지 URL의 이미지에서 보이는 사람의 표정을 분석하여 감정을 판단해주세요.
+                
+                이미지 URL: %s
+                
+                다음 JSON 형식으로만 응답하세요:
+                {
+                  "emotion": "감정명",
+                  "description": "표정과 분위기에 대한 설명"
+                }
+                
+                감정명은 다음 중 하나를 선택하세요:
+                - happy (행복)
+                - sad (슬픔)
+                - angry (분노)
+                - calm (평온)
+                - depressed (우울)
+                - joyful (기쁨)
+                - anxious (불안)
+                - frustrated (화남)
+                - satisfied (만족)
+                - disappointed (실망)
+                - neutral (중립)
+                """, imageUrl);
 
-            // OpenAI Vision API 호출
-            String response = callOpenAiVisionApi(prompt, imageUrl);
+            log.info("=== OpenAI Vision API 호출 시작 ===");
+            
+            // 로컬 파일을 Base64로 변환
+            String base64Image = convertImageToBase64(imageUrl);
+            log.info("Base64 이미지 길이: {}", base64Image.length());
+            
+            // OpenAI Vision API 호출 (Base64 사용)
+            String response = callOpenAiVisionApiWithBase64(prompt, base64Image);
+            log.info("=== OpenAI Vision API 호출 완료 ===");
             
             // 응답 파싱 및 결과 반환
-            return parseEmotionResponse(response);
+            EmotionAnalysisResult result = parseEmotionResponse(response);
+            log.info("=== 이미지 감정 분석 완료 ===");
+            log.info("분석 결과: {}", result);
+            
+            return result;
             
         } catch (Exception e) {
-            log.error("이미지 감정 분석 실패: {}", e.getMessage(), e);
+            log.error("=== 이미지 감정 분석 실패 ===");
+            log.error("예외 타입: {}", e.getClass().getSimpleName());
+            log.error("예외 메시지: {}", e.getMessage());
+            log.error("예외 스택 트레이스:", e);
             return getDefaultEmotionResult();
         }
     }
@@ -229,18 +283,35 @@ public class OpenAiService {
         log.info("통합 감정 분석 시작 - 텍스트 길이: {}, 이미지 URL: {}", text.length(), imageUrl);
 
         try {
-                         // OpenAI API 요청 데이터 구성 (텍스트와 이미지 모두 포함)
-             String prompt = String.format("""
-                 다음 텍스트와 이미지를 종합하여 감정을 분석해주세요.
-                 
-                 텍스트: %s
-                 이미지: %s
-                 
-                 JSON 응답만 반환하세요.
-                 """, text, imageUrl);
+            // OpenAI Vision API 요청 데이터 구성 (텍스트와 이미지 모두 포함)
+            String prompt = String.format("""
+                다음 텍스트와 이미지를 종합하여 감정을 분석해주세요.
+                
+                텍스트: %s
+                
+                다음 JSON 형식으로만 응답하세요:
+                {
+                  "emotion": "감정명",
+                  "description": "텍스트와 이미지를 종합한 감정 분석 설명"
+                }
+                
+                감정명은 다음 중 하나를 선택하세요:
+                - happy (행복)
+                - sad (슬픔)
+                - angry (분노)
+                - calm (평온)
+                - depressed (우울)
+                - joyful (기쁨)
+                - anxious (불안)
+                - frustrated (화남)
+                - satisfied (만족)
+                - disappointed (실망)
+                - neutral (중립)
+                """, text);
 
-            // OpenAI API 호출
-            String response = callOpenAiApi(prompt, "gpt-4o-mini");
+            // 이미지를 Base64로 변환하여 Vision API 사용
+            String base64Image = convertImageToBase64(imageUrl);
+            String response = callOpenAiVisionApiWithBase64(prompt, base64Image);
             
             // 응답 파싱 및 결과 반환
             return parseEmotionResponse(response);
@@ -476,11 +547,46 @@ public class OpenAiService {
             double confidence = 0.0;
             String keywords = "";
             
-            // 감정 타입과 점수를 감정 객체에서 추출
-            // OpenAI API는 "감정" 객체 안에 각 감정별 점수와 신뢰도를 포함하여 반환
-            JsonNode emotionObj = emotionNode.path("감정");
-            if (!emotionObj.isMissingNode()) {
-                // 가장 높은 점수의 감정을 선택 (0~100 범위)
+            // 1. 새로운 형식 처리: {"emotion": "neutral", "description": "..."}
+            if (emotionNode.has("emotion")) {
+                emotion = emotionNode.path("emotion").asText();
+                score = 50.0; // 중립 감정의 경우 기본 점수
+                confidence = 80.0; // 기본 신뢰도
+                keywords = emotionNode.path("description").asText();
+                
+                   // 감정에 따른 점수 조정
+                   switch (emotion.toLowerCase()) {
+                       case "happy", "행복", "joyful", "기쁨":
+                           score = 85.0;
+                           break;
+                       case "sad", "슬픔", "depressed", "우울":
+                           score = 20.0;
+                           break;
+                       case "angry", "분노", "화남", "frustrated", "좌절":
+                           score = 15.0;
+                           break;
+                       case "neutral", "중립":
+                           score = 50.0;
+                           break;
+                       case "anxious", "불안":
+                           score = 30.0;
+                           break;
+                       case "satisfied", "만족":
+                           score = 80.0;
+                           break;
+                       case "disappointed", "실망":
+                           score = 25.0;
+                           break;
+                       case "calm", "평온":
+                           score = 70.0;
+                           break;
+                       default:
+                           score = 50.0;
+                   }
+            }
+            // 2. 기존 형식 처리: {"감정": {"행복": {"점수": 85, "신뢰도": 90}}}
+            else if (emotionNode.has("감정")) {
+                JsonNode emotionObj = emotionNode.path("감정");
                 double maxScore = 0.0;
                 String maxEmotion = "";
                 double maxConfidence = 0.0;
@@ -488,50 +594,42 @@ public class OpenAiService {
                 for (String emotionType : Arrays.asList("행복", "슬픔", "분노", "평온", "우울", "기쁨", "불안", "화남", "만족", "실망")) {
                     JsonNode emotionData = emotionObj.path(emotionType);
                     if (!emotionData.isMissingNode() && emotionData.isObject()) {
-                        // 새로운 구조: {"점수": 85, "신뢰도": 90}
                         double emotionScore = emotionData.path("점수").asDouble();
                         double emotionConfidence = emotionData.path("신뢰도").asDouble();
-                        
-                        log.info("감정 타입: {}, 점수: {}, 신뢰도: {}", emotionType, emotionScore, emotionConfidence);
                         
                         if (emotionScore > maxScore) {
                             maxScore = emotionScore;
                             maxEmotion = emotionType;
                             maxConfidence = emotionConfidence;
                         }
-                    } else {
-                        // 기존 구조: 직접 점수 값
-                        double emotionScore = emotionData.asDouble();
-                        log.info("감정 타입: {}, 점수: {}", emotionType, emotionScore);
-                        
-                        if (emotionScore > maxScore) {
-                            maxScore = emotionScore;
-                            maxEmotion = emotionType;
-                        }
                     }
                 }
                 
                 emotion = maxEmotion;
                 score = maxScore;
-                
-                // 새로운 구조에서는 감정별 신뢰도를 사용
-                if (maxConfidence > 0) {
-                    confidence = maxConfidence;
+                confidence = maxConfidence;
+                keywords = emotion;
+            }
+            // 3. 기타 형식 처리: {"text_emotion": "중립", "image_emotion": "편안함", "overall_emotion": "긍정적"}
+            else if (emotionNode.has("text_emotion") || emotionNode.has("image_emotion") || emotionNode.has("overall_emotion")) {
+                emotion = emotionNode.path("overall_emotion").asText();
+                if (emotion.isEmpty()) {
+                    emotion = emotionNode.path("image_emotion").asText();
                 }
+                if (emotion.isEmpty()) {
+                    emotion = emotionNode.path("text_emotion").asText();
+                }
+                score = 50.0; // 기본 점수
+                confidence = 70.0; // 기본 신뢰도
+                keywords = emotion;
             }
-            
-            // 점수 필드가 있으면 직접 사용 (OpenAI API가 별도로 제공하는 경우)
-            if (emotionNode.has("점수")) {
-                score = emotionNode.path("점수").asDouble();
+            // 4. 기본 필드 처리: {"emotion": "행복", "score": 85, "confidence": 90, "keywords": "..."}
+            else {
+                emotion = emotionNode.path("emotion").asText();
+                score = emotionNode.path("score").asDouble();
+                confidence = emotionNode.path("confidence").asDouble();
+                keywords = emotionNode.path("keywords").asText();
             }
-            
-            // 신뢰도가 아직 설정되지 않았으면 루트 레벨에서 추출 (0~100 범위)
-            if (confidence == 0.0 && emotionNode.has("신뢰도")) {
-                confidence = emotionNode.path("신뢰도").asDouble();
-            }
-            
-            // 키워드는 감정 타입으로 대체 (현재는 감정 타입을 키워드로 사용)
-            keywords = emotion;
             
             log.info("추출된 감정 정보:");
             log.info("  - emotion: {}", emotion);
@@ -558,6 +656,72 @@ public class OpenAiService {
             log.error("예외 스택 트레이스:", e);
             return getDefaultEmotionResult();
         }
+    }
+
+    /**
+     * 이미지 파일을 Base64로 변환
+     * 
+     * @param imageUrl 이미지 파일 경로
+     * @return Base64 인코딩된 이미지 문자열
+     */
+    private String convertImageToBase64(String imageUrl) {
+        try {
+            // 상대 경로를 절대 경로로 변환
+            String filePath = uploadDir + imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+            Path path = Paths.get(filePath);
+            
+            // 파일 읽기
+            byte[] imageBytes = Files.readAllBytes(path);
+            
+            // Base64 인코딩
+            String base64 = Base64.getEncoder().encodeToString(imageBytes);
+            
+            // MIME 타입 결정
+            String mimeType = Files.probeContentType(path);
+            if (mimeType == null) {
+                mimeType = "image/png"; // 기본값
+            }
+            
+            // Data URL 형식으로 반환
+            return "data:" + mimeType + ";base64," + base64;
+            
+        } catch (Exception e) {
+            log.error("이미지 Base64 변환 실패: {}", e.getMessage(), e);
+            return "";
+        }
+    }
+
+    /**
+     * OpenAI Vision API 호출 (Base64 이미지 사용)
+     * 
+     * @param prompt 분석 요청 프롬프트
+     * @param base64Image Base64 인코딩된 이미지
+     * @return API 응답 문자열
+     */
+    private String callOpenAiVisionApiWithBase64(String prompt, String base64Image) {
+        // API 요청 데이터 구성 (Base64 이미지 포함)
+        Map<String, Object> requestBody = Map.of(
+            "model", "gpt-4o",  // Vision API는 gpt-4o 사용
+            "messages", List.of(Map.of(
+                "role", "user",
+                "content", List.of(
+                    Map.of("type", "text", "text", prompt),
+                    Map.of("type", "image_url", "image_url", Map.of("url", base64Image))
+                )
+            )),
+            "max_tokens", 1000,
+            "temperature", 0.3
+        );
+
+        // WebClient를 통한 API 호출
+        return webClient.post()
+                .uri(apiUrl + "/chat/completions")
+                .header("Authorization", "Bearer " + apiKey)
+                .header("Content-Type", "application/json")
+                .bodyValue(requestBody)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
     }
 
     /**
