@@ -6,8 +6,8 @@ spring:
   
   datasource:
     url: jdbc:mysql://localhost:3307/moodiary?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
-    username: root
-    password: 1234
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:1234}
     driver-class-name: com.mysql.cj.jdbc.Driver
   
   jpa:
@@ -36,7 +36,7 @@ server:
 
 # JWT 설정
 jwt:
-  secret: your-secret-key-here-make-it-long-and-secure
+  secret: ${JWT_SECRET:your-secret-key-here-make-it-long-and-secure}
   expiration: 86400000 # 24시간
   access-token-expiration: 86400000 # 24시간 (Access Token)
   refresh-token-expiration: 604800000 # 7일 (Refresh Token)
@@ -44,7 +44,7 @@ jwt:
 # OpenAI 설정
 openai:
   api:
-    key: your-openai-api-key-here
+    key: ${OPENAI_API_KEY:your-openai-api-key-here}
     url: https://api.openai.com/v1
   model: gpt-4
   max-tokens: 1000
