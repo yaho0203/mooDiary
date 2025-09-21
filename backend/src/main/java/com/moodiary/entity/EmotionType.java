@@ -8,6 +8,8 @@ public enum EmotionType {
     CALM("평온"),
     EXCITED("흥분"),
     ANXIOUS("불안"),
+    DISAPPOINTED("실망"),
+    FRUSTRATED("좌절"),
     NEUTRAL("중립");
     
     private final String description;
@@ -49,6 +51,12 @@ public enum EmotionType {
             case "anxious":
             case "불안":
                 return ANXIOUS;
+            case "disappointed":
+            case "실망":
+                return DISAPPOINTED;
+            case "frustrated":
+            case "좌절":
+                return FRUSTRATED;
             case "neutral":
             case "중립":
             default:

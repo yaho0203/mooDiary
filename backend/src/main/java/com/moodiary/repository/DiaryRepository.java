@@ -1,6 +1,7 @@
 package com.moodiary.repository;
 
 import com.moodiary.entity.DiaryEntry;
+import com.moodiary.entity.EmotionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -116,7 +117,7 @@ public interface DiaryRepository extends JpaRepository<DiaryEntry, Long> {
      * @author hyeonSuKim
      * @since 2025-09-03
      */
-    List<DiaryEntry> findByUserIdAndIntegratedEmotion(Long userId, String emotion);
+    List<DiaryEntry> findByUserIdAndIntegratedEmotion(Long userId, EmotionType emotion);
 
     /**
      * 사용자 ID와 텍스트 감정으로 일기 목록 조회

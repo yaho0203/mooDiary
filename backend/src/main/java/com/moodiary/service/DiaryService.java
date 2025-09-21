@@ -461,7 +461,8 @@ public class DiaryService {
     public List<DiaryDto.DiaryResponse> getDiariesByEmotion(Long userId, String emotion) {
         log.info("감정별 일기 조회 - 사용자 ID: {}, 감정: {}", userId, emotion);
 
-        List<DiaryEntry> diaryEntries = diaryRepository.findByUserIdAndIntegratedEmotion(userId, emotion);
+        EmotionType emotionType = EmotionType.fromString(emotion);
+        List<DiaryEntry> diaryEntries = diaryRepository.findByUserIdAndIntegratedEmotion(userId, emotionType);
         return diaryEntries.stream().map(this::convertToResponse).toList();
     }
 

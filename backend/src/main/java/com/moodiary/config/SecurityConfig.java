@@ -52,9 +52,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 세션 비활성화
                 )
-                .oauth2Login(oauth2 -> oauth2
-                        .successHandler(googleService)
-                )
+//                .oauth2Login(oauth2 -> oauth2
+//                        .successHandler(googleService)
+//                ) 진욱아 비활성화했다 알아서 고쳐라 주석처리되어있다
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
