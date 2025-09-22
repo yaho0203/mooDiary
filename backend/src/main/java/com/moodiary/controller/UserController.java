@@ -46,6 +46,13 @@ public class UserController {
 
     }
 
+    @PostMapping("/google/login")
+    public ResponseEntity<?> googleToken(@Valid @RequestBody UserDto.GoogleLoginRequest googleLoginRequest) {
+        UserDto.TokenResponse tokenResponse = userService.googleUserLogin(googleLoginRequest);
+        return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
+    }
+
+
     @GetMapping("/test")
     public String test() {
         return "OK";

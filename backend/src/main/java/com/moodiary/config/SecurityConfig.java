@@ -39,13 +39,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenFilter jwtTokenFilter) throws Exception {
         return http
-//                .authorizeHttpRequests(authz -> authz
-//                        .requestMatchers("/auth/**", "/oauth2/**", "/login/**").permitAll()  // 인증 관련 경로 허용
-//                        .anyRequest().authenticated()  // 나머지는 인증 필요
-//                )
                 .authorizeHttpRequests(authz -> authz
-                        .anyRequest().permitAll()  // 개발용: 모든 요청 허용
+                        .requestMatchers("/auth/**", "/oauth2/**", "/login/**").permitAll()  // 인증 관련 경로 허용
+                        .anyRequest().authenticated()  // 나머지는 인증 필요
                 )
+//                .authorizeHttpRequests(authz -> authz
+//                        .anyRequest().permitAll()  // 개발용: 모든 요청 허용
+//                )
                 .csrf(AbstractHttpConfigurer::disable)  // CSRF 비활성화
                 .formLogin(AbstractHttpConfigurer::disable)  // 로그인 폼 비활성화
                 .httpBasic(AbstractHttpConfigurer::disable)  // HTTP Basic 인증 비활성화

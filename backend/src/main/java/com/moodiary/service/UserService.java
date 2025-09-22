@@ -108,4 +108,22 @@ public class UserService {
             throw new IllegalStateException("리프레시 토큰이 만료되었습니다 다시 로그인 해주세요");
         }
     }
+
+    public UserDto.TokenResponse googleUserLogin(UserDto.@Valid GoogleLoginRequest googleLoginRequest) {
+        User user = userRepository.findById(googleLoginRequest.getUserId()).orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자 입니다"));
+
+
+        String accessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail(), user.getRole());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getId(), user.getEmail(), user.getRole());
+
+        UserDto.TokenResponse tokenResponse = UserDto.TokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken) // 아직 구현 못 함 ㅠㅠ
+                .tokenType("Bearer")
+                .expiresIn(86400000L)
+                .build();
+
+        return tokenResponse;
+
+    }
 }

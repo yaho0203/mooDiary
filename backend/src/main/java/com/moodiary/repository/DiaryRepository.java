@@ -159,4 +159,11 @@ public interface DiaryRepository extends JpaRepository<DiaryEntry, Long> {
      * @since 2025-09-03
      */
     List<DiaryEntry> findByUserIdAndFacialEmotion(Long userId, String emotion);
+
+
+    /**
+     * 사용자의 가장 최근 일기 조회
+     * Top1 + OrderBy를 사용한 자동 생성 메서드
+     */
+    Optional<DiaryEntry> findTopByUserIdOrderByCreatedAtDesc(Long userId);
 }

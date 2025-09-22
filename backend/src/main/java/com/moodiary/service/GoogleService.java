@@ -31,7 +31,8 @@ public class GoogleService extends SimpleUrlAuthenticationSuccessHandler {
 
         String providerId = oAuth2User.getAttribute("sub");
         String email = oAuth2User.getAttribute("email");
-
+        String name = oAuth2User.getAttribute("name");
+        String picture = oAuth2User.getAttribute("picture");
 
 
 
@@ -39,19 +40,20 @@ public class GoogleService extends SimpleUrlAuthenticationSuccessHandler {
 
         if (user == null) {
             user = User.builder()
+                    .nickname(name)
                     .email(email)
                     .socialType(SocialType.GOOGLE)
                     .providerId(providerId)
+                    .profileImage(picture)
                     .build();
 
             userRepository.save(user);
             Long memberId = user.getId();
-//            response.sendRedirect("http://localhost:3000/member/login/google/create?memberId="+memberId);
+            response.sendRedirect("http://localhost:3000/member/login/google/create?member=33068080" + memberId);
 
         } else {
             Long memberId = user.getId();
-
-//            response.sendRedirect("http://localhost:3000/member/login/google/present?memberId="+memberId);
+            response.sendRedirect("http://localhost:3000/member/login/google/present?member=30006397"+memberId);
         }
 
 
