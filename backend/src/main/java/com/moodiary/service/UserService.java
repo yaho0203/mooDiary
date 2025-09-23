@@ -28,31 +28,34 @@ public class UserService {
     }
 
     public User createUser(UserDto.@Valid SignUpRequest signUpRequest) {
-        LocalDateTime now = LocalDateTime.now();
-        Optional<User> userOptional = userRepository.findByEmail(signUpRequest.getEmail());
+        try {
+            LocalDateTime now = LocalDateTime.now();
+            Optional<User> userOptional = userRepository.findByEmail(signUpRequest.getEmail());
 
-        if (userOptional.isPresent()) {
-            throw new IllegalStateException("이미 존재하는 이메일입니다.");
+            if (userOptional.isPresent()) {
+                throw new IllegalStateException("이미 존재하는 이메일입니다.");
+            }
+
+            User user = User.builder()
+                    .email(signUpRequest.getEmail())
+                    .password(passwordEncoder.encode(signUpRequest.getPassword()))
+                    .nickname(signUpRequest.getNickname())
+                    .createdAt(now)
+                    .build();
+
+            User savedUser = userRepository.save(user);
+            return savedUser;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("사용자 생성 중 오류가 발생했습니다: " + e.getMessage());
         }
-
-        User user = User.builder()
-                .email(signUpRequest.getEmail())
-                .password(passwordEncoder.encode(signUpRequest.getPassword()))
-                .nickname(signUpRequest.getNickname())
-                .createdAt(now)
-                .build();
-
-
-        userRepository.save(user);
-
-        return user;
     }
 
     public UserDto.TokenResponse userLogin(UserDto.@Valid LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자 입니다"));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new IllegalStateException("<UNK> <UNK> <UNK>.");
+            throw new IllegalStateException("비밀번호가 일치하지 않습니다.");
         }
 
         String accessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail(), user.getRole());
@@ -75,7 +78,7 @@ public class UserService {
 
         if (jwtTokenFilter.validateRefreshToken(refreshToken)) {
             Long userId = jwtTokenProvider.extractUserId(refreshToken);
-            User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("<UNK> <UNK> <UNK>."));
+            User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
             String newAccessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail(), user.getRole());
 
             return UserDto.TokenResponse.builder()
@@ -95,7 +98,7 @@ public class UserService {
         // 리프레시 토큰 검증
         if (jwtTokenFilter.validateRefreshToken(refreshToken)) {
             Long userId = jwtTokenProvider.extractUserId(refreshToken);
-            User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("<UNK> <UNK> <UNK>."));
+            User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
             String newAccessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail(), user.getRole());
 
             return UserDto.TokenResponse.builder()
