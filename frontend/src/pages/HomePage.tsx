@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DiaryForm from '../components/DiaryForm';
 import EmotionAnalysis from '../components/EmotionAnalysis';
 
@@ -24,6 +25,16 @@ interface EmotionAnalysisResult {
 const HomePage: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<EmotionAnalysisResult | null>(null);
+  const [userInfo, setUserInfo] = useState<any>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // 로컬 스토리지에서 사용자 정보 가져오기
+    const storedUser = localStorage.getItem('mooDiaryUser');
+    if (storedUser) {
+      setUserInfo(JSON.parse(storedUser));
+    }
+  }, []);
 
   const handleDiarySubmit = async (content: string, imageFile?: File) => {
     setIsAnalyzing(true);
@@ -73,103 +84,74 @@ const HomePage: React.FC = () => {
     }
   };
 
+  // 로그인되지 않은 사용자에게는 로그인 페이지로 리다이렉트
+  if (!userInfo) {
+    navigate('/login');
+    return null;
+  }
+
   return (
-    <div className="home-page">
-      <div className="hero-section">
-        <h1>mooDiary에 오신 것을 환영합니다</h1>
-        <p>AI와 함께하는 감정 일기 플랫폼</p>
-      </div>
+    <div className="main-container">
+      <div className="diary-page">
+        <div className="diary-content">
 
-      <div className="main-content">
-        <DiaryForm onSubmit={handleDiarySubmit} isLoading={isAnalyzing} />
-        {analysisResult && <EmotionAnalysis analysis={analysisResult} />}
-      </div>
+          <div style={{ marginBottom: '40px' }}>
+            <DiaryForm onSubmit={handleDiarySubmit} isLoading={isAnalyzing} />
+            {analysisResult && <EmotionAnalysis analysis={analysisResult} />}
+          </div>
 
-      <div className="features">
-        <div className="feature">
-          <h3>감정 분석</h3>
-          <p>텍스트와 이미지를 통한 정확한 감정 분석</p>
-        </div>
-        <div className="feature">
-          <h3>트렌드 시각화</h3>
-          <p>나의 감정 변화를 한눈에 확인</p>
-        </div>
-        <div className="feature">
-          <h3>맞춤 추천</h3>
-          <p>감정에 맞는 콘텐츠 추천</p>
+          <div className="diary-grid">
+            <div className="diary-card">
+              <div className="emotion-badge emotion-happy">🧠</div>
+              <h3>감정 분석</h3>
+              <p>텍스트와 이미지를 통한 정확한 감정 분석으로 나의 마음을 더 깊이 이해해보세요.</p>
+            </div>
+            <div className="diary-card">
+              <div className="emotion-badge emotion-calm">📊</div>
+              <h3>트렌드 시각화</h3>
+              <p>나의 감정 변화를 한눈에 확인하고 패턴을 발견해보세요.</p>
+            </div>
+            <div className="diary-card">
+              <div className="emotion-badge emotion-excited">💡</div>
+              <h3>맞춤 추천</h3>
+              <p>감정에 맞는 콘텐츠와 활동을 추천받아 더 나은 하루를 만들어보세요.</p>
+            </div>
+          </div>
         </div>
       </div>
 
       <style>{`
-        .home-page {
-          min-height: 100vh;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          padding: 20px;
-        }
-
-        .hero-section {
+        .diary-actions {
           text-align: center;
-          color: white;
-          margin-bottom: 40px;
+          margin-bottom: 30px;
+          padding: 20px 0;
         }
 
-        .hero-section h1 {
-          font-size: 2.5rem;
-          margin-bottom: 16px;
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .hero-section p {
+        .open-diary-btn {
+          background: linear-gradient(135deg, #e8dcc0 0%, #d4c4a8 100%);
+          border: 3px solid #c4b59a;
+          border-radius: 30px;
+          padding: 15px 35px;
+          font-family: 'Quicksand', sans-serif;
+          font-weight: 700;
+          color: #5d4e37;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 6px 15px rgba(93, 78, 55, 0.3);
           font-size: 1.2rem;
-          opacity: 0.9;
+          text-transform: uppercase;
+          letter-spacing: 1px;
         }
 
-        .main-content {
-          max-width: 800px;
-          margin: 0 auto 40px;
+        .open-diary-btn:hover {
+          background: linear-gradient(135deg, #d4c4a8 0%, #c4b59a 100%);
+          transform: translateY(-3px);
+          box-shadow: 0 10px 25px rgba(93, 78, 55, 0.4);
         }
 
-        .features {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: 20px;
-          max-width: 1000px;
-          margin: 0 auto;
-        }
-
-        .feature {
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(10px);
-          border-radius: 12px;
-          padding: 24px;
-          text-align: center;
-          color: white;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .feature h3 {
-          margin: 0 0 12px 0;
-          font-size: 1.3rem;
-        }
-
-        .feature p {
-          margin: 0;
-          opacity: 0.9;
-          line-height: 1.5;
-        }
-
-        @media (max-width: 768px) {
-          .hero-section h1 {
-            font-size: 2rem;
-          }
-          
-          .hero-section p {
-            font-size: 1rem;
-          }
-          
-          .features {
-            grid-template-columns: 1fr;
-          }
+        .open-diary-btn:active {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 10px rgba(93, 78, 55, 0.3);
         }
       `}</style>
     </div>
