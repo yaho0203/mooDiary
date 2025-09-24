@@ -1,5 +1,6 @@
 package com.moodiary.entity;
 
+import com.moodiary.recommendContent.entity.RecommendContent;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -73,6 +74,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CommunityComment> communityComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<RecommendContent> recommendContents = new ArrayList<>(); // 사용자가 만든 추천 컨텐츠 추가
 
     // Update methods
     public void updateProfile(String nickname, String profileImage) {
