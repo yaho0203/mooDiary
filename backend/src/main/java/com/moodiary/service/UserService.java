@@ -111,4 +111,9 @@ public class UserService {
             throw new IllegalStateException("리프레시 토큰이 만료되었습니다 다시 로그인 해주세요");
         }
     }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
+    }
 }

@@ -82,22 +82,32 @@ const DiaryForm: React.FC<DiaryFormProps> = ({ onSubmit, isLoading = false }) =>
 
   return (
     <div className="diary-form">
-      <h2>새 일기 작성</h2>
+      <div className="diary-form-header">
+        <h2 className="handwriting">새 일기 작성</h2>
+        <p className="diary-date">{new Date().toLocaleDateString('ko-KR', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric',
+          weekday: 'long'
+        })}</p>
+      </div>
+      
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="content">오늘의 일기</label>
+          <label htmlFor="content" className="handwriting">오늘의 일기</label>
           <textarea
             id="content"
             value={content}
             onChange={handleContentChange}
             placeholder="오늘 하루는 어땠나요? 자유롭게 작성해보세요..."
-            rows={6}
+            rows={8}
             disabled={isLoading}
+            className="diary-textarea"
           />
         </div>
 
         <div className="form-group">
-          <label>이미지 첨부 (선택사항)</label>
+          <label className="handwriting">이미지 첨부 (선택사항)</label>
           <div
             className={`image-upload-area ${dragActive ? 'drag-active' : ''}`}
             onDragEnter={handleDrag}
@@ -128,8 +138,8 @@ const DiaryForm: React.FC<DiaryFormProps> = ({ onSubmit, isLoading = false }) =>
                 </div>
               ) : (
             <div className="upload-placeholder">
-              <div className="upload-icon">이미지</div>
-              <p>이미지를 드래그하거나 클릭하여 업로드</p>
+              <div className="upload-icon">📷</div>
+              <p className="handwriting">이미지를 드래그하거나 클릭하여 업로드</p>
               <p className="upload-hint">JPG, PNG, GIF (최대 10MB)</p>
             </div>
               )}
@@ -141,74 +151,88 @@ const DiaryForm: React.FC<DiaryFormProps> = ({ onSubmit, isLoading = false }) =>
           <button
             type="submit"
             disabled={isLoading || !content.trim()}
-            className="submit-btn"
+            className="diary-button"
           >
-            {isLoading ? '분석 중...' : '일기 저장'}
+            {isLoading ? (
+              <>
+                <span className="diary-spinner"></span> 분석 중...
+              </>
+            ) : (
+              '일기 저장'
+            )}
           </button>
         </div>
       </form>
 
       <style>{`
         .diary-form {
-          max-width: 600px;
+          max-width: 700px;
           margin: 0 auto;
-          padding: 20px;
-          background: #fff;
+          padding: 30px;
+          background: #fefcf7;
+          border: 2px solid #d4c4a8;
           border-radius: 12px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          box-shadow: 
+            0 0 0 1px #e8dcc0,
+            0 4px 20px rgba(93, 78, 55, 0.15);
+          position: relative;
+        }
+
+        .diary-form::before {
+          content: '';
+          position: absolute;
+          left: 20px;
+          top: 0;
+          bottom: 0;
+          width: 2px;
+          background: linear-gradient(to bottom, 
+            transparent 0%, 
+            #c4b59a 20%, 
+            #c4b59a 80%, 
+            transparent 100%);
+        }
+
+        .diary-form-header {
+          text-align: center;
+          margin-bottom: 30px;
+          padding-bottom: 20px;
+          border-bottom: 2px solid #e8dcc0;
         }
 
         .diary-form h2 {
-          margin-bottom: 20px;
-          color: #333;
-          text-align: center;
+          margin: 0 0 10px 0;
+          color: #8b7355;
+          font-size: 1.8rem;
         }
 
         .form-group {
-          margin-bottom: 20px;
+          margin-bottom: 25px;
         }
 
         .form-group label {
           display: block;
-          margin-bottom: 8px;
+          margin-bottom: 10px;
           font-weight: 600;
-          color: #555;
-        }
-
-        textarea {
-          width: 100%;
-          padding: 12px;
-          border: 2px solid #e1e5e9;
-          border-radius: 8px;
-          font-size: 16px;
-          font-family: inherit;
-          resize: vertical;
-          transition: border-color 0.3s ease;
-        }
-
-        textarea:focus {
-          outline: none;
-          border-color: #4f46e5;
-        }
-
-        textarea:disabled {
-          background-color: #f5f5f5;
-          cursor: not-allowed;
+          color: #5d4e37;
+          font-size: 1.1rem;
         }
 
         .image-upload-area {
-          border: 2px dashed #d1d5db;
-          border-radius: 8px;
-          padding: 20px;
+          border: 2px dashed #d4c4a8;
+          border-radius: 12px;
+          padding: 25px;
           text-align: center;
           transition: all 0.3s ease;
           cursor: pointer;
+          background: #fefcf7;
         }
 
         .image-upload-area:hover,
         .image-upload-area.drag-active {
-          border-color: #4f46e5;
-          background-color: #f8fafc;
+          border-color: #c4b59a;
+          background-color: #f8f6f0;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(93, 78, 55, 0.1);
         }
 
         .upload-label {
@@ -220,22 +244,23 @@ const DiaryForm: React.FC<DiaryFormProps> = ({ onSubmit, isLoading = false }) =>
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 8px;
+          gap: 12px;
         }
 
         .upload-icon {
-          font-size: 48px;
-          opacity: 0.6;
+          font-size: 3rem;
+          opacity: 0.7;
         }
 
         .upload-placeholder p {
           margin: 0;
-          color: #6b7280;
+          color: #8b7355;
+          font-size: 1.1rem;
         }
 
         .upload-hint {
-          font-size: 14px;
-          color: #9ca3af;
+          font-size: 0.9rem;
+          color: #a68b5b;
         }
 
         .image-preview {
@@ -244,61 +269,99 @@ const DiaryForm: React.FC<DiaryFormProps> = ({ onSubmit, isLoading = false }) =>
         }
 
         .image-preview img {
-          max-width: 200px;
-          max-height: 200px;
-          border-radius: 8px;
+          max-width: 250px;
+          max-height: 250px;
+          border-radius: 12px;
           object-fit: cover;
+          border: 2px solid #d4c4a8;
+          box-shadow: 0 4px 12px rgba(93, 78, 55, 0.2);
         }
 
         .remove-image-btn {
           position: absolute;
-          top: -8px;
-          right: -8px;
-          width: 24px;
-          height: 24px;
+          top: -10px;
+          right: -10px;
+          width: 28px;
+          height: 28px;
           border: none;
           border-radius: 50%;
-          background-color: #ef4444;
+          background-color: #dc3545;
           color: white;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 12px;
+          font-size: 14px;
+          font-weight: bold;
+          box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+          transition: all 0.3s ease;
         }
 
         .remove-image-btn:hover {
-          background-color: #dc2626;
+          background-color: #c82333;
+          transform: scale(1.1);
         }
 
         .remove-image-btn:disabled {
           background-color: #9ca3af;
           cursor: not-allowed;
+          transform: none;
         }
 
         .form-actions {
           text-align: center;
+          margin-top: 30px;
         }
 
-        .submit-btn {
-          background-color: #4f46e5;
-          color: white;
-          border: none;
-          padding: 12px 24px;
-          border-radius: 8px;
-          font-size: 16px;
+        .diary-button {
+          background: linear-gradient(135deg, #e8dcc0 0%, #d4c4a8 100%);
+          border: 2px solid #c4b59a;
+          border-radius: 25px;
+          padding: 15px 30px;
+          font-family: 'Quicksand', sans-serif;
           font-weight: 600;
+          color: #5d4e37;
           cursor: pointer;
-          transition: background-color 0.3s ease;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 8px rgba(93, 78, 55, 0.2);
+          font-size: 1.1rem;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
         }
 
-        .submit-btn:hover:not(:disabled) {
-          background-color: #4338ca;
+        .diary-button:hover:not(:disabled) {
+          background: linear-gradient(135deg, #d4c4a8 0%, #c4b59a 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 12px rgba(93, 78, 55, 0.3);
         }
 
-        .submit-btn:disabled {
-          background-color: #9ca3af;
+        .diary-button:active {
+          transform: translateY(0);
+          box-shadow: 0 2px 4px rgba(93, 78, 55, 0.2);
+        }
+
+        .diary-button:disabled {
+          background: #e8dcc0;
+          border-color: #d4c4a8;
+          color: #a68b5b;
           cursor: not-allowed;
+          transform: none;
+          box-shadow: 0 2px 4px rgba(93, 78, 55, 0.1);
+        }
+
+        .diary-spinner {
+          display: inline-block;
+          width: 16px;
+          height: 16px;
+          border: 2px solid #e8dcc0;
+          border-radius: 50%;
+          border-top-color: #c4b59a;
+          animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
         }
       `}</style>
     </div>

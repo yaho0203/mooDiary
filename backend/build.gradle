@@ -13,9 +13,6 @@ java {
 }
 
 tasks.withType(JavaCompile) {
-    options.release = 17
-    options.fork = true
-    options.forkOptions.javaHome = file('C:\\Program Files\\Java\\jdk-17')
     options.encoding = 'UTF-8'
 }
 

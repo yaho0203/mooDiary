@@ -54,7 +54,7 @@ public class SecurityConfig {
                 )
 //                .oauth2Login(oauth2 -> oauth2
 //                        .successHandler(googleService)
-//                ) 진욱아 비활성화했다 알아서 고쳐라 주석처리되어있다
+//                )
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
@@ -65,13 +65,13 @@ public class SecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 //    @Bean
-//    public CorsConfigurationSource configurationSource() {
+//    public CorsConfigurationSource corsConfigurationSource() {
 //        CorsConfiguration configuration = new CorsConfiguration();
-////        configuration.setAllowedOrigins(Arrays.asList("Https://localhost:3000"));
 //        configuration.setAllowedOriginPatterns(Arrays.asList("*")); // 모든 url에서 요청 허용 (배포시 url 설정)
-//        configuration.setAllowedMethods(Arrays.asList("*")); // 모든 메서드 허용
+//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 모든 메서드 허용
 //        configuration.setAllowedHeaders(Arrays.asList("*")); // 모든 HTTP 헤더 허용
 //        configuration.setAllowCredentials(true);
+//        configuration.setExposedHeaders(Arrays.asList("Authorization")); // JWT 토큰을 위한 헤더 노출
 //
 //        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); // cors 설정 소스 생성
 //        source.registerCorsConfiguration("/**", configuration); // 모든 요청에 적용
