@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class RecommendContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "image_uri")
     private String imageUri;
@@ -22,7 +22,7 @@ public class RecommendContent {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false,  columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "create_at", nullable = false)

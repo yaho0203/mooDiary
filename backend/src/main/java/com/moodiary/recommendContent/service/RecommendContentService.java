@@ -16,7 +16,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -97,7 +99,7 @@ public class RecommendContentService {
         ResponseDto responseDto = new ResponseDto();
         DiaryEntry diary = diaryRepository.findTopByUserIdOrderByCreatedAtDesc(userId).orElse(null);
         Random random = new Random();
-        int randomNumber = random.nextInt(40);
+        int randomNumber = random.nextInt(15);
 
         List<Map<String, String>> poems;
         switch (diary.getIntegratedEmotion()) {
@@ -135,7 +137,7 @@ public class RecommendContentService {
         return responseDto;
     }
 
-    public ResponseDto getRecommendMovie() {
+    public ResponseDto createRecommendMovie() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserUserDetails userDetails = (UserUserDetails) auth.getPrincipal();
         Long userId = userDetails.getUser().getId();
@@ -143,7 +145,7 @@ public class RecommendContentService {
         ResponseDto responseDto = new ResponseDto();
         DiaryEntry diary = diaryRepository.findTopByUserIdOrderByCreatedAtDesc(userId).orElse(null);
         Random random = new Random();
-        int randomNumber = random.nextInt(40);
+        int randomNumber = random.nextInt(15);
 
 
         List<Map<String, String>> movie = null;
@@ -158,7 +160,7 @@ public class RecommendContentService {
             case ANXIOUS -> movie = emotionMovies.getAnxiousMovies();
             case DISAPPOINTED -> movie = emotionMovies.getDisappointedMovies();
             case FRUSTRATED -> movie = emotionMovies.getFrustratedMovies();
-            case NEUTRAL ->  movie = emotionMovies.getNeutralMovies();
+            case NEUTRAL -> movie = emotionMovies.getNeutralMovies();
         }
 
 // 바로 값 가져오기
@@ -167,7 +169,6 @@ public class RecommendContentService {
         String movieDirector = selectedMovie.get("director");
 
         String movieResponse = geminiApiResponse.getMovieGeminiResponse(movieTitle, diary.getIntegratedEmotion().getDescription(), movieDirector);
-
 
 
         LocalDateTime now = LocalDateTime.now();
@@ -187,7 +188,7 @@ public class RecommendContentService {
 
     }
 
-    public ResponseDto getRecommendMusic() {
+    public ResponseDto createRecommendMusic() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserUserDetails userDetails = (UserUserDetails) auth.getPrincipal();
         Long userId = userDetails.getUser().getId();
@@ -195,7 +196,7 @@ public class RecommendContentService {
         ResponseDto responseDto = new ResponseDto();
         DiaryEntry diary = diaryRepository.findTopByUserIdOrderByCreatedAtDesc(userId).orElse(null);
         Random random = new Random();
-        int randomNumber = random.nextInt(40);
+        int randomNumber = random.nextInt(15);
 
 
         List<Map<String, String>> music = null;
@@ -209,7 +210,7 @@ public class RecommendContentService {
             case ANXIOUS -> music = emotionMovies.getAnxiousMovies();
             case DISAPPOINTED -> music = emotionMovies.getDisappointedMovies();
             case FRUSTRATED -> music = emotionMovies.getFrustratedMovies();
-            case NEUTRAL ->  music = emotionMovies.getNeutralMovies();
+            case NEUTRAL -> music = emotionMovies.getNeutralMovies();
         }
 
 // 바로 값 가져오기
@@ -218,7 +219,6 @@ public class RecommendContentService {
         String musicArtist = selectedMovie.get("artist");
 
         String musicResponse = geminiApiResponse.getMusicGeminiResponse(musicTitle, diary.getIntegratedEmotion().getDescription(), musicArtist);
-
 
 
         LocalDateTime now = LocalDateTime.now();
@@ -236,5 +236,43 @@ public class RecommendContentService {
 
         return responseDto;
 
+    }
+
+    public List<ResponseDto> getRecommendContent(int year, int month, ContentType contentType) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserUserDetails userDetails = (UserUserDetails) auth.getPrincipal();
+        Long userId = userDetails.getUser().getId();
+
+        LocalDateTime startDateTime = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime endDateTime = LocalDateTime.of(year, month, startDateTime.toLocalDate().lengthOfMonth(), 23, 59, 59);
+
+
+        List<RecommendContent> contents = recommentContentRepository.findByUserIdAndContentTypeAndCreateAtBetween(
+                userId, contentType, startDateTime, endDateTime
+        );
+
+        List<ResponseDto> responseDtos = new ArrayList<>();
+
+        for (RecommendContent recommendContent : contents) {
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setTitle(recommendContent.getTitle());
+            responseDto.setContent(recommendContent.getContent());
+            responseDto.setImageUrl(recommendContent.getImageUri());
+            responseDto.setContentId(recommendContent.getId());
+            responseDtos.add(responseDto);
+        }
+
+        return responseDtos;
+    }
+
+    public ResponseDto getRecommendContentId(Long id) {
+        RecommendContent recommendContent = recommentContentRepository.findById(id).orElse(null);
+        ResponseDto responseDto = new ResponseDto();
+
+        responseDto.setTitle(recommendContent.getTitle());
+        responseDto.setContent(recommendContent.getContent());
+        responseDto.setImageUrl(recommendContent.getImageUri());
+        responseDto.setContentId(recommendContent.getId());
+        return responseDto;
     }
 }

@@ -46,7 +46,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/google/login")
+    @PostMapping("/social/login")
     public ResponseEntity<?> googleToken(@Valid @RequestBody UserDto.GoogleLoginRequest googleLoginRequest) {
         UserDto.TokenResponse tokenResponse = userService.googleUserLogin(googleLoginRequest);
         return new ResponseEntity<>(tokenResponse, HttpStatus.OK);

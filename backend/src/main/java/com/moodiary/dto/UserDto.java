@@ -83,7 +83,7 @@ public class UserDto {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public class GoogleLoginRequest {
+    public static class GoogleLoginRequest {
         private Long userId;
     }
 }

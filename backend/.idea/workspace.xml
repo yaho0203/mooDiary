@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8cf65b5f-71d1-4564-94f6-0b0e389928df" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/component/GeminiApiResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/component/GeminiApiResponse.java" afterDir="false" />
-    </list>
+    <list default="true" id="8cf65b5f-71d1-4564-94f6-0b0e389928df" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -121,7 +118,7 @@
       <updated>1758631612116</updated>
       <workItem from="1758631613407" duration="544000" />
       <workItem from="1758676901381" duration="15269000" />
-      <workItem from="1758713109817" duration="5081000" />
+      <workItem from="1758713109817" duration="5221000" />
     </task>
     <servers />
   </component>
