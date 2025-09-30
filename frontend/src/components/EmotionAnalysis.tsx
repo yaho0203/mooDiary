@@ -75,19 +75,30 @@ const EmotionAnalysis: React.FC<EmotionAnalysisProps> = ({ analysis, isLoading =
 
   return (
     <div className="emotion-analysis">
-      <h3>감정 분석 결과</h3>
+      <div className="diary-form-header">
+        <h3 className="handwriting">AI 감정 분석 결과</h3>
+        <p className="diary-date">당신의 마음을 분석해드렸어요</p>
+      </div>
       
       {analysis.integratedEmotion && (
         <div className="main-emotion">
           <div className="emotion-card primary">
             <div className="emotion-header">
-              <span className="emotion-name" style={{ color: getEmotionColor(analysis.integratedEmotion.emotion) }}>
+              <div className="emotion-icon">
+                {analysis.integratedEmotion.emotion === '행복' || analysis.integratedEmotion.emotion === '기쁨' ? '😊' :
+                 analysis.integratedEmotion.emotion === '슬픔' || analysis.integratedEmotion.emotion === '우울' ? '😢' :
+                 analysis.integratedEmotion.emotion === '분노' || analysis.integratedEmotion.emotion === '화남' ? '😠' :
+                 analysis.integratedEmotion.emotion === '평온' || analysis.integratedEmotion.emotion === '차분' ? '😌' :
+                 analysis.integratedEmotion.emotion === '불안' || analysis.integratedEmotion.emotion === '걱정' ? '😰' :
+                 analysis.integratedEmotion.emotion === '설렘' || analysis.integratedEmotion.emotion === '흥분' ? '🤩' : '😐'}
+              </div>
+              <span className="emotion-name handwriting" style={{ color: getEmotionColor(analysis.integratedEmotion.emotion) }}>
                 {analysis.integratedEmotion.emotion}
               </span>
             </div>
             <div className="emotion-details">
               <div className="score-item">
-                <span className="label">감정 강도</span>
+                <span className="label handwriting">감정 강도</span>
                 <div className="score-bar">
                   <div 
                     className="score-fill" 
@@ -100,7 +111,7 @@ const EmotionAnalysis: React.FC<EmotionAnalysisProps> = ({ analysis, isLoading =
                 <span className="score-value">{analysis.integratedEmotion.score}%</span>
               </div>
               <div className="confidence-item">
-                <span className="label">분석 신뢰도</span>
+                <span className="label handwriting">분석 신뢰도</span>
                 <span className="confidence-value">
                   {analysis.integratedEmotion.confidence}% ({getConfidenceLevel(analysis.integratedEmotion.confidence)})
                 </span>
@@ -113,9 +124,9 @@ const EmotionAnalysis: React.FC<EmotionAnalysisProps> = ({ analysis, isLoading =
       <div className="detailed-analysis">
         {analysis.textEmotion && (
           <div className="emotion-card">
-            <h4>📝 텍스트 분석</h4>
+            <h4 className="handwriting">📝 텍스트 분석</h4>
             <div className="emotion-item">
-              <span className="emotion-name" style={{ color: getEmotionColor(analysis.textEmotion.emotion) }}>
+              <span className="emotion-name handwriting" style={{ color: getEmotionColor(analysis.textEmotion.emotion) }}>
                 {analysis.textEmotion.emotion}
               </span>
               <span className="emotion-score">{analysis.textEmotion.score}%</span>
@@ -128,9 +139,9 @@ const EmotionAnalysis: React.FC<EmotionAnalysisProps> = ({ analysis, isLoading =
 
         {analysis.imageEmotion && (
           <div className="emotion-card">
-            <h4>📷 이미지 분석</h4>
+            <h4 className="handwriting">이미지 분석</h4>
             <div className="emotion-item">
-              <span className="emotion-name" style={{ color: getEmotionColor(analysis.imageEmotion.emotion) }}>
+              <span className="emotion-name handwriting" style={{ color: getEmotionColor(analysis.imageEmotion.emotion) }}>
                 {analysis.imageEmotion.emotion}
               </span>
               <span className="emotion-score">{analysis.imageEmotion.score}%</span>
@@ -144,7 +155,7 @@ const EmotionAnalysis: React.FC<EmotionAnalysisProps> = ({ analysis, isLoading =
 
       {analysis.keywords && (
         <div className="keywords-section">
-          <h4>🔍 키워드</h4>
+          <h4 className="handwriting">발견된 키워드</h4>
           <div className="keywords">
             {analysis.keywords.split(',').map((keyword, index) => (
               <span key={index} className="keyword">
@@ -157,17 +168,42 @@ const EmotionAnalysis: React.FC<EmotionAnalysisProps> = ({ analysis, isLoading =
 
       <style>{`
         .emotion-analysis {
-          margin-top: 20px;
-          padding: 20px;
-          background: #f8fafc;
+          margin-top: 30px;
+          padding: 30px;
+          background: #fefcf7;
+          border: 2px solid #d4c4a8;
           border-radius: 12px;
-          border: 1px solid #e2e8f0;
+          box-shadow: 
+            0 0 0 1px #e8dcc0,
+            0 4px 20px rgba(93, 78, 55, 0.15);
+          position: relative;
+        }
+
+        .emotion-analysis::before {
+          content: '';
+          position: absolute;
+          left: 20px;
+          top: 0;
+          bottom: 0;
+          width: 2px;
+          background: linear-gradient(to bottom, 
+            transparent 0%, 
+            #c4b59a 20%, 
+            #c4b59a 80%, 
+            transparent 100%);
+        }
+
+        .diary-form-header {
+          text-align: center;
+          margin-bottom: 30px;
+          padding-bottom: 20px;
+          border-bottom: 2px solid #e8dcc0;
         }
 
         .emotion-analysis h3 {
-          margin: 0 0 20px 0;
-          color: #1e293b;
-          text-align: center;
+          margin: 0 0 10px 0;
+          color: #8b7355;
+          font-size: 1.8rem;
         }
 
         .loading {
@@ -178,8 +214,8 @@ const EmotionAnalysis: React.FC<EmotionAnalysisProps> = ({ analysis, isLoading =
         .loading-spinner {
           width: 40px;
           height: 40px;
-          border: 4px solid #e2e8f0;
-          border-top: 4px solid #4f46e5;
+          border: 4px solid #e8dcc0;
+          border-top: 4px solid #c4b59a;
           border-radius: 50%;
           animation: spin 1s linear infinite;
           margin: 0 auto 16px;
@@ -191,132 +227,156 @@ const EmotionAnalysis: React.FC<EmotionAnalysisProps> = ({ analysis, isLoading =
         }
 
         .main-emotion {
-          margin-bottom: 20px;
+          margin-bottom: 25px;
         }
 
         .emotion-card {
-          background: white;
-          border-radius: 8px;
-          padding: 16px;
-          margin-bottom: 12px;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          background: #fefcf7;
+          border: 2px solid #e8dcc0;
+          border-radius: 12px;
+          padding: 20px;
+          margin-bottom: 15px;
+          box-shadow: 0 2px 8px rgba(93, 78, 55, 0.1);
+          position: relative;
         }
 
         .emotion-card.primary {
-          border: 2px solid #4f46e5;
+          border: 3px solid #c4b59a;
+          background: linear-gradient(135deg, #fefcf7 0%, #f8f6f0 100%);
         }
 
         .emotion-header {
           display: flex;
           align-items: center;
-          gap: 8px;
-          margin-bottom: 12px;
+          gap: 12px;
+          margin-bottom: 15px;
         }
 
+        .emotion-icon {
+          font-size: 2rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 50px;
+          height: 50px;
+          background: rgba(212, 196, 168, 0.2);
+          border-radius: 50%;
+          border: 2px solid #d4c4a8;
+        }
 
         .emotion-name {
-          font-size: 18px;
+          font-size: 1.5rem;
           font-weight: 600;
         }
 
         .emotion-details {
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 15px;
         }
 
         .score-item {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 15px;
         }
 
         .label {
-          font-size: 14px;
-          color: #64748b;
-          min-width: 80px;
+          font-size: 1rem;
+          color: #5d4e37;
+          min-width: 100px;
+          font-weight: 600;
         }
 
         .score-bar {
           flex: 1;
-          height: 8px;
-          background-color: #e2e8f0;
-          border-radius: 4px;
+          height: 12px;
+          background-color: #e8dcc0;
+          border-radius: 6px;
           overflow: hidden;
+          border: 1px solid #d4c4a8;
         }
 
         .score-fill {
           height: 100%;
-          transition: width 0.3s ease;
+          transition: width 0.5s ease;
+          border-radius: 6px;
         }
 
         .score-value {
           font-weight: 600;
-          color: #1e293b;
-          min-width: 40px;
+          color: #5d4e37;
+          min-width: 50px;
           text-align: right;
+          font-size: 1.1rem;
         }
 
         .confidence-item {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 15px;
         }
 
         .confidence-value {
-          font-size: 14px;
-          color: #64748b;
+          font-size: 1rem;
+          color: #8b7355;
+          font-weight: 500;
         }
 
         .detailed-analysis {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 12px;
-          margin-bottom: 20px;
+          gap: 15px;
+          margin-bottom: 25px;
         }
 
         .emotion-card h4 {
-          margin: 0 0 12px 0;
-          font-size: 14px;
-          color: #64748b;
+          margin: 0 0 15px 0;
+          font-size: 1.1rem;
+          color: #8b7355;
+          font-weight: 600;
         }
 
         .emotion-item {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 8px;
+          margin-bottom: 10px;
         }
 
         .emotion-score {
           font-weight: 600;
-          color: #1e293b;
+          color: #5d4e37;
+          font-size: 1.1rem;
         }
 
         .confidence {
-          font-size: 12px;
-          color: #64748b;
+          font-size: 0.9rem;
+          color: #8b7355;
         }
 
         .keywords-section h4 {
-          margin: 0 0 12px 0;
-          font-size: 14px;
-          color: #64748b;
+          margin: 0 0 15px 0;
+          font-size: 1.1rem;
+          color: #8b7355;
+          font-weight: 600;
         }
 
         .keywords {
           display: flex;
           flex-wrap: wrap;
-          gap: 8px;
+          gap: 10px;
         }
 
         .keyword {
-          background: #e2e8f0;
-          color: #475569;
-          padding: 4px 8px;
-          border-radius: 16px;
-          font-size: 12px;
-          font-weight: 500;
+          background: linear-gradient(135deg, #e8dcc0 0%, #d4c4a8 100%);
+          color: #5d4e37;
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          border: 1px solid #c4b59a;
+          box-shadow: 0 2px 4px rgba(93, 78, 55, 0.1);
         }
 
         @media (max-width: 768px) {
@@ -327,13 +387,19 @@ const EmotionAnalysis: React.FC<EmotionAnalysisProps> = ({ analysis, isLoading =
           .score-item {
             flex-direction: column;
             align-items: flex-start;
-            gap: 8px;
+            gap: 10px;
           }
           
           .confidence-item {
             flex-direction: column;
             align-items: flex-start;
-            gap: 8px;
+            gap: 10px;
+          }
+
+          .emotion-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 10px;
           }
         }
       `}</style>

@@ -2,6 +2,7 @@ package com.moodiary.controller;
 
 import com.moodiary.dto.UserDto;
 import com.moodiary.entity.User;
+import com.moodiary.repository.UserRepository;
 import com.moodiary.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -15,9 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 public class UserController {
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     // TODO: 사용자 관련 API 구현
@@ -25,13 +28,46 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDto.SignUpRequest signUpRequest) {
         User user = userService.createUser(signUpRequest);
-        return new ResponseEntity<>(user.getId(), HttpStatus.CREATED);
+        
+        // 사용자 정보를 DTO로 변환하여 반환
+        UserDto.UserResponse userResponse = UserDto.UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .profileImage(user.getProfileImage())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .build();
+        
+        return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
     // - 로그인
     @PostMapping("/login")
     public ResponseEntity<?> userLogin(@Valid @RequestBody UserDto.LoginRequest loginRequest) {
         UserDto.TokenResponse tokenResponse = userService.userLogin(loginRequest);
-        return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
+        
+        // 사용자 정보를 가져와서 함께 반환
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
+        UserDto.UserResponse userResponse = UserDto.UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .profileImage(user.getProfileImage())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .build();
+        
+        // 토큰과 사용자 정보를 함께 반환
+        UserDto.LoginResponse loginResponse = UserDto.LoginResponse.builder()
+                .accessToken(tokenResponse.getAccessToken())
+                .refreshToken(tokenResponse.getRefreshToken())
+                .tokenType(tokenResponse.getTokenType())
+                .expiresIn(tokenResponse.getExpiresIn())
+                .user(userResponse)
+                .build();
+        
+        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
 
 

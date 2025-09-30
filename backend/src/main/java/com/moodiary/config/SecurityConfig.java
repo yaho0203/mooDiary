@@ -39,6 +39,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenFilter jwtTokenFilter) throws Exception {
         return http
+//                .authorizeHttpRequests(authz -> authz
+//                        .requestMatchers("/auth/**", "/oauth2/**", "/login/**").permitAll()  // 인증 관련 경로 허용
+//                        .anyRequest().authenticated()  // 나머지는 인증 필요
+//                )
                 .authorizeHttpRequests(authz -> authz
                         // 인증 없이 접근 허용할 경로
                         .requestMatchers("/api/auth/**",
@@ -71,13 +75,13 @@ public class SecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 //    @Bean
-//    public CorsConfigurationSource configurationSource() {
+//    public CorsConfigurationSource corsConfigurationSource() {
 //        CorsConfiguration configuration = new CorsConfiguration();
-////        configuration.setAllowedOrigins(Arrays.asList("Https://localhost:3000"));
 //        configuration.setAllowedOriginPatterns(Arrays.asList("*")); // 모든 url에서 요청 허용 (배포시 url 설정)
-//        configuration.setAllowedMethods(Arrays.asList("*")); // 모든 메서드 허용
+//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 모든 메서드 허용
 //        configuration.setAllowedHeaders(Arrays.asList("*")); // 모든 HTTP 헤더 허용
 //        configuration.setAllowCredentials(true);
+//        configuration.setExposedHeaders(Arrays.asList("Authorization")); // JWT 토큰을 위한 헤더 노출
 //
 //        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); // cors 설정 소스 생성
 //        source.registerCorsConfiguration("/**", configuration); // 모든 요청에 적용
