@@ -44,17 +44,27 @@ public class SecurityConfig {
 //                        .anyRequest().authenticated()  // 나머지는 인증 필요
 //                )
                 .authorizeHttpRequests(authz -> authz
-                        .anyRequest().permitAll()  // 개발용: 모든 요청 허용
+                        // 인증 없이 접근 허용할 경로
+                        .requestMatchers("/api/auth/**",
+                                "/api/oauth2/**",
+                                "/api/login/**",
+                                "/api/social/**").permitAll()
+                        // 나머지 요청은 인증 필요
+                        .anyRequest().authenticated()
                 )
+//                .authorizeHttpRequests(authz -> authz
+//                        .anyRequest().permitAll()  // 개발용: 모든 요청 허용
+//                )
                 .csrf(AbstractHttpConfigurer::disable)  // CSRF 비활성화
                 .formLogin(AbstractHttpConfigurer::disable)  // 로그인 폼 비활성화
                 .httpBasic(AbstractHttpConfigurer::disable)  // HTTP Basic 인증 비활성화
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 세션 비활성화
                 )
-//                .oauth2Login(oauth2 -> oauth2
-//                        .successHandler(googleService)
-//                )
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(googleService)
+                )
+//        진욱아 비활성화했다 알아서 고쳐라 주석처리되어있다 (해결완료)
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

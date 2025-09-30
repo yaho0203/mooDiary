@@ -112,6 +112,24 @@ public class UserService {
         }
     }
 
+    public UserDto.TokenResponse googleUserLogin(UserDto.@Valid GoogleLoginRequest googleLoginRequest) {
+        User user = userRepository.findById(googleLoginRequest.getUserId()).orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자 입니다"));
+
+
+        String accessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail(), user.getRole());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getId(), user.getEmail(), user.getRole());
+
+        UserDto.TokenResponse tokenResponse = UserDto.TokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken) // 아직 구현 못 함 ㅠㅠ
+                .tokenType("Bearer")
+                .expiresIn(86400000L)
+                .build();
+
+        return tokenResponse;
+
+    }
+
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));

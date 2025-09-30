@@ -78,4 +78,12 @@ public class UserDto {
         private Long expiresIn;
         private UserResponse user;
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GoogleLoginRequest {
+        private Long userId;
+    }
 }
