@@ -86,4 +86,9 @@ public class UserDto {
     public static class GoogleLoginRequest {
         private Long userId;
     }
+
+    public static class UserProfileResponse {
+        public UserProfileResponse(String nickname, String profileImage) {
+        }
+    }
 }

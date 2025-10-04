@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -167,4 +168,16 @@ public interface DiaryRepository extends JpaRepository<DiaryEntry, Long> {
      * Top1 + OrderBy를 사용한 자동 생성 메서드
      */
     Optional<DiaryEntry> findTopByUserIdOrderByCreatedAtDesc(Long userId);
+
+    /**
+     * 오늘 날짜 기준으로 일기 검색
+     */
+    // DiaryRepository.java
+    Optional<DiaryEntry> findByUserIdAndDate(Long userId, LocalDate date);
+
+
+    /**
+     * 메인페이지 기준 최근 4개 일기 기록 가져오기
+     */
+    List<DiaryEntry> findTop5ByUserIdOrderByCreatedAtDesc(Long userId);
 }
