@@ -87,8 +87,12 @@ public class UserDto {
         private Long userId;
     }
 
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class UserProfileResponse {
-        public UserProfileResponse(String nickname, String profileImage) {
-        }
+        private String nickname;
+        private String profileImage;
     }
 }

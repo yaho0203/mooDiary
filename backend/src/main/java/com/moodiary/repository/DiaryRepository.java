@@ -173,7 +173,7 @@ public interface DiaryRepository extends JpaRepository<DiaryEntry, Long> {
      * 오늘 날짜 기준으로 일기 검색
      */
     // DiaryRepository.java
-    Optional<DiaryEntry> findByUserIdAndDate(Long userId, LocalDate date);
+//    Optional<DiaryEntry> findByUserIdAndDate(Long userId, LocalDate date);
 
 
     /**

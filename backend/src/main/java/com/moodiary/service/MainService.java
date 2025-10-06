@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,7 +42,13 @@ public class MainService {
         Long userId = getCurrentUserId();
         LocalDate today = LocalDate.now();
 
-        Optional<DiaryEntry> diaryOpt = diaryRepository.findByUserIdAndDate(userId, today);
+        LocalDateTime start = today.atStartOfDay();           // 2025-10-06 00:00:00
+        LocalDateTime end = today.atTime(LocalTime.MAX);      // 2025-10-06 23:59:59.999999
+
+        Optional<DiaryEntry> diaryOpt = diaryRepository.findByUserIdAndCreatedAtBetween(userId, start, end);
+
+
+//        Optional<DiaryEntry> diaryOpt = diaryRepository.findByUserIdAndDate(userId, today);
         return diaryOpt.map(this::toDiaryResponse).orElse(null);
     }
 
@@ -90,6 +98,6 @@ public class MainService {
      */
     private Long getCurrentUserId() {
         // TODO: SecurityContextHolder or JwtUserDetails 활용
-        return 1L; // 임시 값
+        return 9L; // 임시 값
     }
 }

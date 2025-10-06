@@ -60,7 +60,7 @@ public class MainController {
      * 메인 페이지 통합 응답
      * - userProfile + todayDiary + recentDiaries
      */
-    @GetMapping
+    @GetMapping("/test")
     public ResponseEntity<MainPageResponse> getMainPage() {
         return ResponseEntity.ok(
                 new MainPageResponse(

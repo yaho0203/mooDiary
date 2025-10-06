@@ -45,10 +45,9 @@ public class SecurityConfig {
 //                )
                 .authorizeHttpRequests(authz -> authz
                         // 인증 없이 접근 허용할 경로
-                        .requestMatchers("/api/auth/**",
-                                "/api/oauth2/**",
-                                "/api/login/**",
-                                "/api/social/**").permitAll()
+                        .requestMatchers("/api/users/**",
+                                "/api/login/**"
+                        ).permitAll()
                         // 나머지 요청은 인증 필요
                         .anyRequest().authenticated()
                 )
