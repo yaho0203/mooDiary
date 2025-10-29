@@ -2,6 +2,7 @@ package com.moodiary.controller;
 
 import com.moodiary.dto.UserDto;
 import com.moodiary.entity.User;
+import com.moodiary.entity.UserUserDetails;
 import com.moodiary.repository.UserRepository;
 import com.moodiary.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -93,8 +96,9 @@ public class UserController {
     public String test() {
         return "OK";
     }
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    UserUserDetails userDetails = (UserUserDetails) auth.getPrincipal();
+    Long userId = userDetails.getUser().getId();
 
-    // - 사용자 정보 조회
-    // - 사용자 정보 수정
     
 }
