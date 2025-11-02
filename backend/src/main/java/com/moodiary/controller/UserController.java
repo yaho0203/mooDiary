@@ -96,9 +96,4 @@ public class UserController {
     public String test() {
         return "OK";
     }
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    UserUserDetails userDetails = (UserUserDetails) auth.getPrincipal();
-    Long userId = userDetails.getUser().getId();
-
-    
 }

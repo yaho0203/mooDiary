@@ -5,9 +5,12 @@ import com.moodiary.dto.DiaryDto.DiaryResponse;
 import com.moodiary.entity.DiaryEntry;
 import com.moodiary.entity.EmotionType;
 import com.moodiary.entity.User;
+import com.moodiary.entity.UserUserDetails;
 import com.moodiary.repository.DiaryRepository;
 import com.moodiary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -98,6 +101,9 @@ public class MainService {
      */
     private Long getCurrentUserId() {
         // TODO: SecurityContextHolder or JwtUserDetails 활용
-        return 9L; // 임시 값
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserUserDetails userDetails = (UserUserDetails) auth.getPrincipal();
+        Long userId = userDetails.getUser().getId();
+        return userId;
     }
 }
