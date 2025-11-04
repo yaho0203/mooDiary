@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/bookmarks")
+@RequestMapping("/api/bookmarks")
 @RequiredArgsConstructor
 public class BookmarkController {
 
@@ -23,7 +23,7 @@ public class BookmarkController {
         bookmarkService.removeBookmark(userId, diaryId);
     }
 
-    @GetMapping("/{diaryId}")
+    @GetMapping
     public List<BookmarkDto> getBookmarks(@RequestParam Long userId) {
         return bookmarkService.getBookmarksByUser(userId);
     }
