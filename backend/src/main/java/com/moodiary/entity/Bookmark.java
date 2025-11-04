@@ -16,20 +16,23 @@ public class Bookmark {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+
     private String title;  // 북마크 제목 (일기 제목 복사 가능)
+
+    @Column(nullable = false)
+    private String preview;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;  // 북마크 내용 (일기 내용 복사 가능)
 
     // 북마크를 등록한 사용자
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "User", nullable = false)
     private User user;
 
     // 북마크가 참조하는 DiaryEntry (일기)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diary_entry_id", nullable = false)
+    @JoinColumn(name = "Diary", nullable = false)
     private DiaryEntry diaryEntry;
 
     @Column(nullable = false, updatable = false)
