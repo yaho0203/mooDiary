@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/bookmarks")
+@RequestMapping("/bookmarks")
 @RequiredArgsConstructor
 public class BookmarkController {
 
@@ -27,9 +27,9 @@ public class BookmarkController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{diaryId}")
-    public ResponseEntity<List<BookmarkDto>> getBookmarks(@RequestParam Long userId) {
-        List<BookmarkDto> bookmarkDtoList =  bookmarkService.getBookmarksByUser(userId);
-        return new ResponseEntity<>(bookmarkDtoList, HttpStatus.OK);
+    @GetMapping("/registered")
+    public ResponseEntity<BookmarkDto> getBookmarks() {
+        BookmarkDto bookmarkDto =  bookmarkService.getBookmarksByUser();
+        return new ResponseEntity<>(bookmarkDto, HttpStatus.OK);
     }
 }

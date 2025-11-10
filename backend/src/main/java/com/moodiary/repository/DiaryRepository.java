@@ -2,6 +2,7 @@ package com.moodiary.repository;
 
 import com.moodiary.entity.DiaryEntry;
 import com.moodiary.entity.EmotionType;
+import com.moodiary.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -99,6 +100,13 @@ public interface DiaryRepository extends JpaRepository<DiaryEntry, Long> {
             @Param("endDate") LocalDateTime endDate
     );
 
+    @Query("SELECT d FROM DiaryEntry d WHERE d.user.id = :userId AND d.createdAt BETWEEN :startDate AND :endDate ORDER BY d.createdAt DESC")
+    List<DiaryEntry> findByUserIdAndCreatedAtBetweenOrderByCreatedAtDesc(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
+
     /**
      * 사용자 ID와 통합 감정으로 일기 목록 조회
      * 
@@ -180,4 +188,10 @@ public interface DiaryRepository extends JpaRepository<DiaryEntry, Long> {
      * 메인페이지 기준 최근 4개 일기 기록 가져오기
      */
     List<DiaryEntry> findTop5ByUserIdOrderByCreatedAtDesc(Long userId);
+
+    /**
+     * 사용자가 작성한 일기의 수 가져오기
+     */
+
+    Long countByUser(User user);
 }

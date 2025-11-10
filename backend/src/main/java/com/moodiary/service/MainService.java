@@ -48,12 +48,13 @@ public class MainService {
         LocalDateTime start = today.atStartOfDay();           // 2025-10-06 00:00:00
         LocalDateTime end = today.atTime(LocalTime.MAX);      // 2025-10-06 23:59:59.999999
 
-        Optional<DiaryEntry> diaryOpt = diaryRepository.findByUserIdAndCreatedAtBetween(userId, start, end);
+        // 오늘 작성된 일기들을 생성일자 기준 내림차순으로 가져오기
+        List<DiaryEntry> diaries = diaryRepository.findByUserIdAndCreatedAtBetweenOrderByCreatedAtDesc(userId, start, end);
 
-
-//        Optional<DiaryEntry> diaryOpt = diaryRepository.findByUserIdAndDate(userId, today);
-        return diaryOpt.map(this::toDiaryResponse).orElse(null);
+        // 가장 최신 일기 하나만 가져와서 DiaryResponse로 변환
+        return diaries.isEmpty() ? null : toDiaryResponse(diaries.get(0));
     }
+
 
     /**
      * 최근 작성한 일기 5개
