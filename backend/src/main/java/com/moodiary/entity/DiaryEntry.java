@@ -7,6 +7,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "diary_entries")
@@ -31,7 +33,11 @@ public class DiaryEntry {
     
     @Column(name = "image_url")
     private String imageUrl;
-    
+
+    @OneToMany(mappedBy = "diaryEntry", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Bookmark> bookmarks = new ArrayList<>();
+
+
     // 감정 분석 결과
     @Enumerated(EnumType.STRING)
     @Column(name = "text_emotion")

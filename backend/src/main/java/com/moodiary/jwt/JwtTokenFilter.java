@@ -81,6 +81,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write("{\"error\": \"Invalid token\"}");
+            System.out.println("invalid token");
         }
     }
 

@@ -86,4 +86,13 @@ public class UserDto {
     public static class GoogleLoginRequest {
         private Long userId;
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserProfileResponse {
+        private String nickname;
+        private String profileImage;
+    }
 }

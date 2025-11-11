@@ -39,10 +39,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenFilter jwtTokenFilter) throws Exception {
         return http
-//                .authorizeHttpRequests(authz -> authz
-//                        .requestMatchers("/auth/**", "/oauth2/**", "/login/**").permitAll()  // 인증 관련 경로 허용
-//                        .anyRequest().authenticated()  // 나머지는 인증 필요
-//                )
                 .authorizeHttpRequests(authz -> authz
                         // 인증 없이 접근 허용할 경로
                         .requestMatchers("/users/**").permitAll()
@@ -71,18 +67,31 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOriginPatterns(Arrays.asList("*")); // 모든 url에서 요청 허용 (배포시 url 설정)
-//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 모든 메서드 허용
-//        configuration.setAllowedHeaders(Arrays.asList("*")); // 모든 HTTP 헤더 허용
-//        configuration.setAllowCredentials(true);
-//        configuration.setExposedHeaders(Arrays.asList("Authorization")); // JWT 토큰을 위한 헤더 노출
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); // cors 설정 소스 생성
-//        source.registerCorsConfiguration("/**", configuration); // 모든 요청에 적용
-//        return source;
-//    }
+
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // 개발 환경
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+                "http://localhost:*",                        // 로컬 개발용
+                "https://moo-diary-fe.vercel.app",          // 배포된 프론트엔드
+                "https://*.vercel.app"                       // Vercel의 모든 서브도메인 허용 (필요시)
+        ));
+
+        // 또는 배포 환경에서는 구체적인 도메인 지정
+        // configuration.setAllowedOrigins(Arrays.asList("https://yourdomain.com"));
+
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
+        configuration.setMaxAge(3600L); // preflight 요청 캐싱 시간
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
 }
