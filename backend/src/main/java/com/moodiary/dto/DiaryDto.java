@@ -10,6 +10,7 @@ public class DiaryDto {
     
     @Getter
     @Setter
+    @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder

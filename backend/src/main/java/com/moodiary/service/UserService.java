@@ -40,6 +40,7 @@ public class UserService {
                     .email(signUpRequest.getEmail())
                     .password(passwordEncoder.encode(signUpRequest.getPassword()))
                     .nickname(signUpRequest.getNickname())
+                    .profileImage(signUpRequest.getProfileImage())
                     .createdAt(now)
                     .build();
 

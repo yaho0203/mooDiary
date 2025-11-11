@@ -78,6 +78,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RecommendContent> recommendContents = new ArrayList<>(); // 사용자가 만든 추천 컨텐츠 추가
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Bookmark> bookmarks = new ArrayList<>();
+
     // Update methods
     public void updateProfile(String nickname, String profileImage) {
         this.nickname = nickname;
