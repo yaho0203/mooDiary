@@ -120,6 +120,7 @@ public class GoogleService extends SimpleUrlAuthenticationSuccessHandler {
             }
         }
 
+
 // providerId가 없으면 로그인 실패 처리
         if (providerId == null) {
             response.sendRedirect("http://localhost:5137/login?error=invalid_provider_id");
