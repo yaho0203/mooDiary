@@ -122,7 +122,7 @@ public class GoogleService extends SimpleUrlAuthenticationSuccessHandler {
 
 // providerId가 없으면 로그인 실패 처리
         if (providerId == null) {
-            response.sendRedirect("https://moo-diary-fe.vercel.app/login?error=invalid_provider_id");
+            response.sendRedirect("http://localhost:5137/login?error=invalid_provider_id");
             return;
         }
 
@@ -130,7 +130,7 @@ public class GoogleService extends SimpleUrlAuthenticationSuccessHandler {
         if (user == null) {
             // 새 사용자 생성시 필수 필드 검증
             if (email == null || name == null) {
-                response.sendRedirect("https://moo-diary-fe.vercel.app/login?error=insufficient_user_info");
+                response.sendRedirect("http://localhost:5137/login?error=insufficient_user_info");
                 return;
             }
 
@@ -142,9 +142,9 @@ public class GoogleService extends SimpleUrlAuthenticationSuccessHandler {
                     .profileImage(picture)
                     .build();
             userRepository.save(user);
-            response.sendRedirect("https://moo-diary-fe.vercel.app/member/login/create?member=30006397" + user.getId());
+            response.sendRedirect("http://localhost:5137/member/login/create?member=30006397" + user.getId());
         } else {
-            response.sendRedirect("https://moo-diary-fe.vercel.app/member/login/present?member=80803306" + user.getId());
+            response.sendRedirect("http://localhost:5137/member/login/present?member=80803306" + user.getId());
         }
 
 
