@@ -39,6 +39,7 @@ public class UserDto {
         private Long id;
         private String email;
         private String nickname;
+        private String phone;
         private String profileImage;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;

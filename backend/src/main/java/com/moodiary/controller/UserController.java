@@ -30,20 +30,11 @@ public class UserController {
     // - 회원가입
     @PostMapping("/create")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDto.SignUpRequest signUpRequest) {
-        User user = userService.createUser(signUpRequest);
-        
-        // 사용자 정보를 DTO로 변환하여 반환
-        UserDto.UserResponse userResponse = UserDto.UserResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .nickname(user.getNickname())
-                .profileImage(user.getProfileImage())
-                .createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdatedAt())
-                .build();
-        
+        UserDto.UserResponse userResponse = userService.createUser(signUpRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
+
+
     // - 로그인
     @PostMapping("/login")
     public ResponseEntity<?> userLogin(@Valid @RequestBody UserDto.LoginRequest loginRequest) {
