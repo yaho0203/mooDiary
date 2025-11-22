@@ -27,7 +27,7 @@ public class UserService {
         this.jwtTokenFilter = jwtTokenFilter;
     }
 
-    public User createUser(UserDto.@Valid SignUpRequest signUpRequest) {
+    public UserDto.UserResponse createUser(UserDto.@Valid SignUpRequest signUpRequest) {
         try {
             LocalDateTime now = LocalDateTime.now();
             Optional<User> userOptional = userRepository.findByEmail(signUpRequest.getEmail());
@@ -40,12 +40,24 @@ public class UserService {
                     .email(signUpRequest.getEmail())
                     .password(passwordEncoder.encode(signUpRequest.getPassword()))
                     .nickname(signUpRequest.getNickname())
+                    .phoneNumber(signUpRequest.getPhone())
                     .profileImage(signUpRequest.getProfileImage())
                     .createdAt(now)
                     .build();
 
             User savedUser = userRepository.save(user);
-            return savedUser;
+
+            UserDto.UserResponse userResponse = UserDto.UserResponse.builder()
+                    .id(savedUser.getId())
+                    .email(savedUser.getEmail())
+                    .nickname(savedUser.getNickname())
+                    .phone(savedUser.getPhoneNumber())
+                    .profileImage(savedUser.getProfileImage())
+                    .createdAt(savedUser.getCreatedAt())
+                    .updatedAt(savedUser.getUpdatedAt())
+                    .build();
+
+            return userResponse;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("사용자 생성 중 오류가 발생했습니다: " + e.getMessage());

@@ -40,6 +40,10 @@ public class User {
     @Column(nullable = true)
     private String password;
 
+    @Column(nullable = true)
+    private String phoneNumber;
+
+
     @Column(nullable = false)
     private String nickname;
 
