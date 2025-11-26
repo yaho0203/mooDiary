@@ -44,6 +44,12 @@ public class RecommentContentController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    @GetMapping("/wise-saying/create")
+    public ResponseEntity<?> createRecommendWiseSaying() {
+        ResponseDto responseDto = recommendContentService.createRecommendWiseSaying();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
     // 이번달 추천 컨텐츠 (음악, 영화, 시, 책)
     @GetMapping("/read")
     public ResponseEntity<?> getRecommendContent(@RequestParam int year, @RequestParam int month, @RequestParam ContentType contentType) {

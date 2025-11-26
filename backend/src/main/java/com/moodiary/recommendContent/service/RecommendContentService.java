@@ -202,16 +202,18 @@ public class RecommendContentService {
         List<Map<String, String>> music = null;
 
         switch (diary.getIntegratedEmotion()) {
-            case HAPPY -> music = emotionMovies.getHappyMovies();
-            case ANGRY -> music = emotionMovies.getAngryMovies();
-            case DEPRESSED -> music = emotionMovies.getDepressedMovies();
-            case CALM -> music = emotionMovies.getCalmMovies();
-            case EXCITED -> music = emotionMovies.getExcitedMovies();
-            case ANXIOUS -> music = emotionMovies.getAnxiousMovies();
-            case DISAPPOINTED -> music = emotionMovies.getDisappointedMovies();
-            case FRUSTRATED -> music = emotionMovies.getFrustratedMovies();
-            case NEUTRAL -> music = emotionMovies.getNeutralMovies();
+            case HAPPY -> music = emotionSong.getHappySongs();
+            case SAD -> music = emotionSong.getSadSongs();
+            case ANGRY -> music = emotionSong.getAngrySongs();
+            case DEPRESSED -> music = emotionSong.getDepressedSongs();
+            case CALM -> music = emotionSong.getCalmSongs();
+            case EXCITED -> music = emotionSong.getExcitedSongs();
+            case ANXIOUS -> music = emotionSong.getAnxiousSongs();
+            case DISAPPOINTED -> music = emotionSong.getDisappointedSongs();
+            case FRUSTRATED -> music = emotionSong.getFrustratedSongs();
+            case NEUTRAL -> music = emotionSong.getNeutralSongs();
         }
+
 
 // 바로 값 가져오기
         Map<String, String> selectedMovie = music.get(randomNumber);
@@ -274,5 +276,53 @@ public class RecommendContentService {
         responseDto.setImageUrl(recommendContent.getImageUri());
         responseDto.setContentId(recommendContent.getId());
         return responseDto;
+    }
+
+    public ResponseDto createRecommendWiseSaying() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserUserDetails userDetails = (UserUserDetails) auth.getPrincipal();
+        Long userId = userDetails.getUser().getId();
+
+        ResponseDto responseDto = new ResponseDto();
+        DiaryEntry diary = diaryRepository.findTopByUserIdOrderByCreatedAtDesc(userId).orElse(null);
+        Random random = new Random();
+        int randomNumber = random.nextInt(40);
+
+        List<String> wiseSayingList = null;
+
+        switch (diary.getIntegratedEmotion()) {
+            case HAPPY -> wiseSayingList = EmotionWiseSaying.HAPPY_QUOTES;
+            case SAD -> wiseSayingList = EmotionWiseSaying.SAD_QUOTES;
+            case ANGRY -> wiseSayingList = EmotionWiseSaying.ANGRY_QUOTES;
+            case DEPRESSED -> wiseSayingList = EmotionWiseSaying.DEPRESSED_QUOTES;
+            case CALM -> wiseSayingList = EmotionWiseSaying.CALM_QUOTES;
+            case EXCITED -> wiseSayingList = EmotionWiseSaying.EXCITED_QUOTES;
+            case ANXIOUS -> wiseSayingList = EmotionWiseSaying.ANXIOUS_QUOTES;
+            case DISAPPOINTED -> wiseSayingList = EmotionWiseSaying.DISAPPOINTED_QUOTES;
+            case FRUSTRATED -> wiseSayingList = EmotionWiseSaying.FRUSTRATED_QUOTES;
+            case NEUTRAL -> wiseSayingList = EmotionWiseSaying.NEUTRAL_QUOTES;
+        }
+
+        String wiseSaying = wiseSayingList.get(randomNumber);
+
+        String wiseSayingResponse = geminiApiResponse.getWiseSayingGeminiResponse(wiseSaying, diary.getIntegratedEmotion().getDescription());
+
+
+        LocalDateTime now = LocalDateTime.now();
+        RecommendContent recommendContent = new RecommendContent();
+        recommendContent.setTitle(wiseSaying);
+        recommendContent.setUser(userDetails.getUser());
+        recommendContent.setContent(wiseSayingResponse);
+        recommendContent.setImageUri(null);
+        recommendContent.setCreateAt(now);
+        recommendContent.setContentType(ContentType.WISESAYING);
+        recommentContentRepository.save(recommendContent);
+
+        responseDto.setTitle(wiseSaying);
+        responseDto.setContent(wiseSayingResponse);
+
+        return responseDto;
+
+
     }
 }
