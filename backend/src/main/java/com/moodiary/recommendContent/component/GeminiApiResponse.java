@@ -21,7 +21,9 @@ public class GeminiApiResponse {
     // 하드코딩: API Key + 엔드포인트
     @Value("${gemini.api-key}")
     private String GEMINI_API_KEY;
-    private static final String GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+//    private static final String GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+private static final String GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent";
+
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

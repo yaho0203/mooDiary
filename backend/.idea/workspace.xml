@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8cf65b5f-71d1-4564-94f6-0b0e389928df" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/entity/EmotionWiseSaying.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/controller/RecommentContentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/controller/RecommentContentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/entity/EmotionSong.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/entity/EmotionSong.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/component/GeminiApiResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/component/GeminiApiResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/service/RecommendContentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/service/RecommendContentService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -151,16 +149,5 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/moodiary/controller/UserController.java</url>
-          <line>32</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

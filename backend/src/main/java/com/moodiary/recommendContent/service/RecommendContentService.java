@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Random;
 
 @Service
-
+@AllArgsConstructor
 public class RecommendContentService {
     private final RecommentContentRepository recommentContentRepository;
     private final EmotionBooks emotionBooks;
@@ -35,18 +35,6 @@ public class RecommendContentService {
     private final EmotionMovies emotionMovies;
     private final EmotionSong emotionSong;
 
-
-    public RecommendContentService(RecommentContentRepository recommentContentRepository, EmotionBooks emotionBooks, DiaryRepository diaryRepository, JwtTokenProvider jwtTokenProvider, NaverBookClient naverBookClient, GeminiApiResponse geminiApiResponse, EmotionPoems emotionPoems, EmotionMovies emotionMovies, EmotionSong emotionSong) {
-        this.recommentContentRepository = recommentContentRepository;
-        this.emotionBooks = emotionBooks;
-        this.diaryRepository = diaryRepository;
-
-        this.naverBookClient = naverBookClient;
-        this.geminiApiResponse = geminiApiResponse;
-        this.emotionPoems = emotionPoems;
-        this.emotionMovies = emotionMovies;
-        this.emotionSong = emotionSong;
-    }
 
     public ResponseDto createNewRecommendBook() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -82,8 +70,9 @@ public class RecommendContentService {
         recommendContent.setCreateAt(now);
         recommendContent.setContentType(ContentType.BOOK);
 
-        recommentContentRepository.save(recommendContent);
+        RecommendContent saved = recommentContentRepository.save(recommendContent);
 
+        responseDto.setContentId(saved.getId());
         responseDto.setTitle(bookTitle);
         responseDto.setContent(content);
         responseDto.setImageUrl(bookImageUrl);
@@ -121,8 +110,6 @@ public class RecommendContentService {
 
         String poemResponse = geminiApiResponse.getPomeGeminiResponse(poemTitle, diary.getIntegratedEmotion().getDescription(), poemAuthor);
 
-        responseDto.setTitle(poemTitle);
-        responseDto.setContent(poemResponse);
         LocalDateTime now = LocalDateTime.now();
 
         RecommendContent recommendContent = new RecommendContent();
@@ -132,8 +119,11 @@ public class RecommendContentService {
         recommendContent.setImageUri(null);
         recommendContent.setCreateAt(now);
         recommendContent.setContentType(ContentType.POEM);
-        recommentContentRepository.save(recommendContent);
+        RecommendContent saved = recommentContentRepository.save(recommendContent);
 
+        responseDto.setTitle(poemTitle);
+        responseDto.setContent(poemResponse);
+        responseDto.setContentId(saved.getId());
         return responseDto;
     }
 
@@ -179,8 +169,9 @@ public class RecommendContentService {
         recommendContent.setImageUri(null);
         recommendContent.setCreateAt(now);
         recommendContent.setContentType(ContentType.MOVIE);
-        recommentContentRepository.save(recommendContent);
+        RecommendContent saved = recommentContentRepository.save(recommendContent);
 
+        responseDto.setContentId(saved.getId());
         responseDto.setTitle(movieTitle);
         responseDto.setContent(movieResponse);
 
@@ -231,8 +222,9 @@ public class RecommendContentService {
         recommendContent.setImageUri(null);
         recommendContent.setCreateAt(now);
         recommendContent.setContentType(ContentType.MUSIC);
-        recommentContentRepository.save(recommendContent);
+        RecommendContent saved = recommentContentRepository.save(recommendContent);
 
+        responseDto.setContentId(saved.getId());
         responseDto.setTitle(musicTitle);
         responseDto.setContent(musicResponse);
 
@@ -316,10 +308,11 @@ public class RecommendContentService {
         recommendContent.setImageUri(null);
         recommendContent.setCreateAt(now);
         recommendContent.setContentType(ContentType.WISESAYING);
-        recommentContentRepository.save(recommendContent);
+        RecommendContent saved = recommentContentRepository.save(recommendContent);
 
         responseDto.setTitle(wiseSaying);
         responseDto.setContent(wiseSayingResponse);
+        responseDto.setContentId(saved.getId());
 
         return responseDto;
 
