@@ -92,8 +92,11 @@ public class UserDto {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class UserProfileResponse {
         private String nickname;
         private String profileImage;
+        private String phoneNumber;
+        private String email;
     }
 }

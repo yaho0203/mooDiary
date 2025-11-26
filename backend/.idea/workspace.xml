@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8cf65b5f-71d1-4564-94f6-0b0e389928df" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/component/GeminiApiResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/component/GeminiApiResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/service/RecommendContentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/recommendContent/service/RecommendContentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/dto/UserDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/dto/UserDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/moodiary/service/MainService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/moodiary/service/MainService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
