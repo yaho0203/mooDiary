@@ -26,6 +26,11 @@ public class BookmarkController {
         BookmarkDto bookmarkDto = bookmarkService.getBookmarksByUser();
         return new ResponseEntity<>(bookmarkDto, HttpStatus.OK);
     }
+    @GetMapping("/{diaryId}")
+    public ResponseEntity<BookmarkDto.DiaryContent> getBookmark(@PathVariable Long diaryId) {
+        BookmarkDto.DiaryContent bookmark = bookmarkService.getBookmarkByDiaryId(diaryId);
+        return ResponseEntity.ok(bookmark);
+    }
 
     @PostMapping("/{diaryId}")
     public ResponseEntity<?> addBookmark(@PathVariable Long diaryId) {

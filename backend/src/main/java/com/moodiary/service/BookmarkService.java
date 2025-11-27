@@ -53,6 +53,26 @@ public class BookmarkService {
         bookmarkRepository.save(bookmark);
     }
 
+    @Transactional(readOnly = true)
+    public BookmarkDto.DiaryContent getBookmarkByDiaryId(Long diaryId) {
+        User user = getCurrentUser(); // 현재 로그인 사용자
+
+        Bookmark bookmark = bookmarkRepository.findByUserAndDiaryEntryId(user, diaryId)
+                .orElseThrow(() -> new IllegalArgumentException("북마크가 존재하지 않습니다."));
+
+        String previewTitle = bookmark.getDiaryEntry().getContent() != null
+                ? bookmark.getDiaryEntry().getContent().substring(0, Math.min(20, bookmark.getDiaryEntry().getContent().length()))
+                : "무제";
+
+        return BookmarkDto.DiaryContent.builder()
+                .diaryId(bookmark.getDiaryEntry().getId())
+                .content(previewTitle)
+                .temperature(bookmark.getDiaryEntry().getTextEmotionScore())
+                .createdAt(bookmark.getDiaryEntry().getCreatedAt())
+                .build();
+    }
+
+
     @Transactional
     public void removeBookmark(Long diaryId) {
         // 1차로 일기 꺼내기
