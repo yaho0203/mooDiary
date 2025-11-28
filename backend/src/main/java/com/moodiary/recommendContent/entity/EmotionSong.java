@@ -1,5 +1,7 @@
 package com.moodiary.recommendContent.entity;
 
+import jakarta.persistence.Entity;
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -7,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@Getter
 public class EmotionSong {
 
     public static final List<Map<String, String>> HAPPY_SONGS = Arrays.asList(
@@ -188,4 +191,45 @@ public class EmotionSong {
             Map.of("title", "미소", "artist", "신승훈"),
             Map.of("title", "인연", "artist", "이선희")
     );
+
+    public List<Map<String, String>> getHappySongs() {
+        return HAPPY_SONGS;
+    }
+
+    public List<Map<String, String>> getSadSongs() {
+        return SAD_SONGS;
+    }
+
+    public List<Map<String, String>> getAngrySongs() {
+        return ANGRY_SONGS;
+    }
+
+    public List<Map<String, String>> getDepressedSongs() {
+        return DEPRESSED_SONGS;
+    }
+
+    public List<Map<String, String>> getCalmSongs() {
+        return CALM_SONGS;
+    }
+
+    public List<Map<String, String>> getExcitedSongs() {
+        return EXCITED_SONGS;
+    }
+
+    public List<Map<String, String>> getAnxiousSongs() {
+        return ANXIOUS_SONGS;
+    }
+
+    public List<Map<String, String>> getDisappointedSongs() {
+        return DISAPPOINTED_SONGS;
+    }
+
+    public List<Map<String, String>> getFrustratedSongs() {
+        return FRUSTRATED_SONGS;
+    }
+
+    public List<Map<String, String>> getNeutralSongs() {
+        return NEUTRAL_SONGS;
+    }
+
 }

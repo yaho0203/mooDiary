@@ -21,7 +21,9 @@ public class GeminiApiResponse {
     // 하드코딩: API Key + 엔드포인트
     @Value("${gemini.api-key}")
     private String GEMINI_API_KEY;
-    private static final String GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+//    private static final String GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+private static final String GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent";
+
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -266,6 +268,86 @@ public class GeminiApiResponse {
 
     public String getMusicGeminiResponse(String musicTitle, String description, String musicArtist) {
         String prompt = "사용자가 작성한 일기의 감정은 " + description + "이야 그래서 " + musicArtist + "의 " + musicTitle + "노래를 소개해주려 하는데 간단하게 노래의 내용을 알려주고 사용자의 감정에 맞춰 간단한 메세지를 줘";
+
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+
+            // 요청 헤더
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            // URL 파라미터로 API 키 추가하는 방식으로 변경
+            String urlWithKey = GEMINI_ENDPOINT + "?key=" + GEMINI_API_KEY;
+
+            // Gemini API의 올바른 요청 형식
+            Map<String, Object> bodyMap = new HashMap<>();
+
+            // contents 배열 구조
+            List<Map<String, Object>> contents = new ArrayList<>();
+            Map<String, Object> content = new HashMap<>();
+
+            List<Map<String, String>> parts = new ArrayList<>();
+            Map<String, String> part = new HashMap<>();
+            part.put("text", prompt);
+            parts.add(part);
+
+            content.put("parts", parts);
+            contents.add(content);
+
+            bodyMap.put("contents", contents);
+
+            String bodyJson = objectMapper.writeValueAsString(bodyMap);
+
+            System.out.println("Request URL: " + urlWithKey);
+            System.out.println("Request Body: " + bodyJson);
+
+            HttpEntity<String> entity = new HttpEntity<>(bodyJson, headers);
+
+            // POST 요청
+            ResponseEntity<JsonNode> response = restTemplate.exchange(
+                    urlWithKey,
+                    HttpMethod.POST,
+                    entity,
+                    JsonNode.class
+            );
+
+            System.out.println("Response Status: " + response.getStatusCode());
+            System.out.println("Response Body: " + response.getBody());
+
+            JsonNode bodyNode = response.getBody();
+
+            // Gemini API의 실제 응답 구조에 맞게 수정
+            if (bodyNode != null && bodyNode.has("candidates") && bodyNode.get("candidates").isArray()
+                    && bodyNode.get("candidates").size() > 0) {
+                JsonNode candidate = bodyNode.get("candidates").get(0);
+                if (candidate.has("content") && candidate.get("content").has("parts")
+                        && candidate.get("content").get("parts").isArray()
+                        && candidate.get("content").get("parts").size() > 0) {
+                    return candidate.get("content").get("parts").get(0).path("text").asText();
+                }
+            }
+
+            // 응답이 예상과 다른 경우를 위한 fallback
+            return "응답 구조를 파싱할 수 없습니다: " + bodyNode.toString();
+
+        } catch (HttpClientErrorException e) {
+            System.err.println("HTTP 클라이언트 에러: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+            return "HTTP 에러 (" + e.getStatusCode() + "): " + e.getResponseBodyAsString();
+        } catch (HttpServerErrorException e) {
+            System.err.println("HTTP 서버 에러: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+            return "서버 에러 (" + e.getStatusCode() + "): " + e.getResponseBodyAsString();
+        } catch (ResourceAccessException e) {
+            System.err.println("네트워크 연결 에러: " + e.getMessage());
+            return "네트워크 연결 실패: " + e.getMessage();
+        } catch (Exception e) {
+            System.err.println("Gemini API 호출 실패: " + e.getMessage());
+            e.printStackTrace();
+            return "API 호출 실패: " + e.getMessage();
+        }
+    }
+
+
+    public String getWiseSayingGeminiResponse(String wiseSayingTitle, String description) {
+        String prompt = "사용자가 작성한 일기의 감정은 " + description + "이야 그래서 " + wiseSayingTitle + "이라는 명언을 소개해주려 하는데 간단하게 명언의 속 뜻을 알려주고 사용자의 감정에 맞춰 간단한 메세지를 줘";
 
         try {
             RestTemplate restTemplate = new RestTemplate();

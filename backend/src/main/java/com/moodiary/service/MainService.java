@@ -2,6 +2,7 @@ package com.moodiary.service;
 
 import com.moodiary.dto.DiaryDto;
 import com.moodiary.dto.DiaryDto.DiaryResponse;
+import com.moodiary.dto.UserDto;
 import com.moodiary.entity.DiaryEntry;
 import com.moodiary.entity.EmotionType;
 import com.moodiary.entity.User;
@@ -30,12 +31,20 @@ public class MainService {
     /**
      * 로그인한 사용자 프로필 조회
      */
-    public com.moodiary.dto.UserDto.UserProfileResponse getUserProfile() {
+    public UserDto.UserProfileResponse getUserProfile() {
         Long userId = getCurrentUserId();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
 
-        return new com.moodiary.dto.UserDto.UserProfileResponse(user.getNickname(), user.getProfileImage());
+        UserDto.UserProfileResponse userProfileResponse = UserDto.UserProfileResponse.builder()
+                .email(user.getEmail())
+                .profileImage(user.getProfileImage())
+                .nickname(user.getNickname())
+                .phoneNumber(user.getPhoneNumber())
+                .build();
+
+
+        return userProfileResponse;
     }
 
     /**
