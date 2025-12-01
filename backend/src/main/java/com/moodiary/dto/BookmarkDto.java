@@ -34,7 +34,7 @@ public class BookmarkDto {
     public static class DiaryContent {
         private Long diaryId;
         private String content;
-        private Double Temperature;
+        private Double temperature;
         private LocalDateTime createdAt;
     }
 }

@@ -15,6 +15,23 @@ public class BookmarkController {
 
     private final BookmarkService bookmarkService;
 
+    @GetMapping("/all")
+    public ResponseEntity<List<BookmarkDto.DiaryContent>> getAllBookmarks() {
+        List<BookmarkDto.DiaryContent> bookmarks = bookmarkService.getAllBookmarksByUser();
+        return new ResponseEntity<>(bookmarks, HttpStatus.OK);
+    }
+
+    @GetMapping("/registered")
+    public ResponseEntity<BookmarkDto> getBookmarks() {
+        BookmarkDto bookmarkDto = bookmarkService.getBookmarksByUser();
+        return new ResponseEntity<>(bookmarkDto, HttpStatus.OK);
+    }
+    @GetMapping("/{diaryId}")
+    public ResponseEntity<BookmarkDto.DiaryContent> getBookmark(@PathVariable Long diaryId) {
+        BookmarkDto.DiaryContent bookmark = bookmarkService.getBookmarkByDiaryId(diaryId);
+        return ResponseEntity.ok(bookmark);
+    }
+
     @PostMapping("/{diaryId}")
     public ResponseEntity<?> addBookmark(@PathVariable Long diaryId) {
         bookmarkService.addBookmark(diaryId);
@@ -25,11 +42,5 @@ public class BookmarkController {
     public ResponseEntity<?> removeBookmark(@PathVariable Long diaryId) {
         bookmarkService.removeBookmark(diaryId);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/registered")
-    public ResponseEntity<BookmarkDto> getBookmarks() {
-        BookmarkDto bookmarkDto =  bookmarkService.getBookmarksByUser();
-        return new ResponseEntity<>(bookmarkDto, HttpStatus.OK);
     }
 }

@@ -36,7 +36,7 @@ public class BookmarkService {
             throw new IllegalStateException("이미 북마크된 일기입니다.");
         }
 
-        // ✅ DiaryEntry에서 제목 대신 내용(content)의 앞부분을 잘라 사용
+        //  DiaryEntry에서 제목 대신 내용(content)의 앞부분을 잘라 사용
         String previewTitle = diary.getContent() != null
                 ? diary.getContent().substring(0, Math.min(20, diary.getContent().length())) : "무제"; // 앞 20글자
 
@@ -53,6 +53,26 @@ public class BookmarkService {
         bookmarkRepository.save(bookmark);
     }
 
+    @Transactional(readOnly = true)
+    public BookmarkDto.DiaryContent getBookmarkByDiaryId(Long diaryId) {
+        User user = getCurrentUser(); // 현재 로그인 사용자
+
+        Bookmark bookmark = bookmarkRepository.findByUserAndDiaryEntryId(user, diaryId)
+                .orElseThrow(() -> new IllegalArgumentException("북마크가 존재하지 않습니다."));
+
+        String previewTitle = bookmark.getDiaryEntry().getContent() != null
+                ? bookmark.getDiaryEntry().getContent().substring(0, Math.min(20, bookmark.getDiaryEntry().getContent().length()))
+                : "무제";
+
+        return BookmarkDto.DiaryContent.builder()
+                .diaryId(bookmark.getDiaryEntry().getId())
+                .content(previewTitle)
+                .temperature(bookmark.getDiaryEntry().getTextEmotionScore())
+                .createdAt(bookmark.getDiaryEntry().getCreatedAt())
+                .build();
+    }
+
+
     @Transactional
     public void removeBookmark(Long diaryId) {
         // 1차로 일기 꺼내기
@@ -62,9 +82,9 @@ public class BookmarkService {
         // 일기 아이디로 일기 삭제
         DiaryEntry diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new IllegalArgumentException("일기 없음"));
-        if (diary.getUser().getId().equals(getCurrentUserId())) {
+        //if (diary.getUser().getId().equals(getCurrentUserId())) {
             // 여기 예외처리는 알아서 하십쇼
-        }
+        //}
         User user = userRepository.findById(getCurrentUserId()).orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
 
         bookmarkRepository.deleteByUserAndDiaryEntry(user, diary);
@@ -90,7 +110,7 @@ public class BookmarkService {
             BookmarkDto.DiaryContent content = BookmarkDto.DiaryContent.builder()
                     .diaryId(bookmark.getDiaryEntry().getId())
                     .content(previewTitle)
-                    .Temperature(bookmark.getDiaryEntry().getTextEmotionScore())
+                    .temperature(bookmark.getDiaryEntry().getTextEmotionScore())
                     .createdAt(bookmark.getDiaryEntry().getCreatedAt())
                     .build();
 
@@ -118,6 +138,22 @@ public class BookmarkService {
 //                        .build())
 //                .collect(Collectors.toList());
     }
+    @Transactional(readOnly = true)
+    public List<BookmarkDto.DiaryContent> getAllBookmarksByUser() {
+        User user = getCurrentUser(); // JWT 에서 현재 사용자
+
+        List<Bookmark> bookmarks = bookmarkRepository.findByUser(user);
+
+        return bookmarks.stream()
+                .map(bookmark -> BookmarkDto.DiaryContent.builder()
+                        .diaryId(bookmark.getDiaryEntry().getId())
+                        .content(bookmark.getPreview()) // 또는 앞 20글자 substring
+                        .temperature(bookmark.getDiaryEntry().getTextEmotionScore())
+                        .createdAt(bookmark.getDiaryEntry().getCreatedAt())
+                        .build())
+                .toList();
+    }
+
 
 
     private Long getCurrentUserId() {
