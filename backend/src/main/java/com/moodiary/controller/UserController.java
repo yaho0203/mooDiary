@@ -5,6 +5,8 @@ import com.moodiary.entity.User;
 import com.moodiary.entity.UserUserDetails;
 import com.moodiary.repository.UserRepository;
 import com.moodiary.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/users")
 @CrossOrigin(origins = "*")
+@Tag(name = "사용자 API", description = "사용자 회원가입, 로그인, 토큰 갱신 API")
 public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
@@ -29,6 +32,7 @@ public class UserController {
     // TODO: 사용자 관련 API 구현
     // - 회원가입
     @PostMapping("/create")
+    @Operation(summary = "회원가입", description = "새로운 사용자를 등록합니다")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDto.SignUpRequest signUpRequest) {
         UserDto.UserResponse userResponse = userService.createUser(signUpRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
@@ -37,6 +41,7 @@ public class UserController {
 
     // - 로그인
     @PostMapping("/login")
+    @Operation(summary = "로그인", description = "이메일과 비밀번호로 로그인합니다")
     public ResponseEntity<?> userLogin(@Valid @RequestBody UserDto.LoginRequest loginRequest) {
         UserDto.TokenResponse tokenResponse = userService.userLogin(loginRequest);
         
@@ -66,6 +71,7 @@ public class UserController {
 
 
     @PostMapping("/refresh")
+    @Operation(summary = "토큰 갱신", description = "Refresh Token을 사용하여 새로운 Access Token을 발급받습니다")
     public ResponseEntity<?> createRefreshToken(HttpServletRequest request) {
         String refreshToken = request.getHeader("refresh-token");
         refreshToken = refreshToken.substring(7);
@@ -77,6 +83,7 @@ public class UserController {
     }
 
     @PostMapping("/social/login")
+    @Operation(summary = "소셜 로그인", description = "Google, Kakao, Naver 등 소셜 로그인을 처리합니다")
     public ResponseEntity<?> googleToken(@Valid @RequestBody UserDto.GoogleLoginRequest googleLoginRequest) {
         UserDto.TokenResponse tokenResponse = userService.googleUserLogin(googleLoginRequest);
         return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
@@ -84,6 +91,7 @@ public class UserController {
 
 
     @GetMapping("/test")
+    @Operation(summary = "테스트 엔드포인트", description = "서버 연결 테스트용 엔드포인트입니다")
     public String test() {
         return "OK";
     }

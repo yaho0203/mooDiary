@@ -8,8 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -41,10 +39,18 @@ public class SecurityConfig {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authz -> authz
+                        // Swagger UI 및 API 문서 경로 허용
+                        // Spring Security는 context-path를 제거한 후 매칭하므로 /api 없이 경로 지정
+                        .requestMatchers(
+                                "/swagger-ui.html", 
+                                "/swagger-ui/**", 
+                                "/swagger-ui/index.html",
+                                "/api-docs", 
+                                "/v3/api-docs",
+                                "/v3/api-docs/**"
+                        ).permitAll()
                         // 인증 없이 접근 허용할 경로
                         .requestMatchers("/users/**").permitAll()
-                        // Swagger UI 경로 허용
-                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/v3/api-docs/**").permitAll()
                         // 나머지 요청은 인증 필요
                         .anyRequest().authenticated()
                 )
