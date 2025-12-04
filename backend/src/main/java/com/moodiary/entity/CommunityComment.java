@@ -33,7 +33,6 @@ public class CommunityComment {
     private String content;
     
     @Column(name = "is_anonymous", nullable = false)
-    @Builder.Default
     private Boolean isAnonymous = false;
     
     @Column(name = "created_at", nullable = false, updatable = false)

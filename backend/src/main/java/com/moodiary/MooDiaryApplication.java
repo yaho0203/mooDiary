@@ -2,13 +2,10 @@ package com.moodiary;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@SpringBootApplication(exclude = {
-    OAuth2ClientAutoConfiguration.class,
-    OAuth2ResourceServerAutoConfiguration.class
-})
+@SpringBootApplication
+@EnableJpaAuditing
 public class MooDiaryApplication {
 
     public static void main(String[] args) {

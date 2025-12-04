@@ -1,11 +1,251 @@
-/* src/index.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Google Fonts - 다이어리 느낌의 폰트 */
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Kalam:wght@300;400;700&family=Quicksand:wght@300;400;500;600;700&display=swap');
 
-/* NaN 표시 숨김 처리 */
 * {
-  text-rendering: optimizeLegibility;
+  box-sizing: border-box;
 }
 
-/* NaN이 포함된 텍스트 노드 숨김 (JavaScript로 처리) */
+body {
+  margin: 0;
+  font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc0 50%, #d4c4a8 100%);
+  min-height: 100vh;
+  color: #5d4e37;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* 다이어리 기본 스타일 */
+.diary-page {
+  background: #fefcf7;
+  border: 2px solid #d4c4a8;
+  border-radius: 8px;
+  box-shadow: 
+    0 0 0 1px #e8dcc0,
+    0 4px 20px rgba(93, 78, 55, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  position: relative;
+  margin: 20px auto;
+  max-width: 800px;
+  min-height: 600px;
+}
+
+/* 바인딩 홀 효과 */
+.diary-page::before {
+  content: '';
+  position: absolute;
+  left: 30px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, 
+    transparent 0%, 
+    #c4b59a 20%, 
+    #c4b59a 80%, 
+    transparent 100%);
+  box-shadow: 
+    -1px 0 0 rgba(196, 181, 154, 0.3),
+    1px 0 0 rgba(196, 181, 154, 0.3);
+}
+
+/* 바인딩 홀들 */
+.diary-page::after {
+  content: '';
+  position: absolute;
+  left: 25px;
+  top: 50px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #c4b59a;
+  box-shadow: 
+    0 40px 0 #c4b59a,
+    0 80px 0 #c4b59a,
+    0 120px 0 #c4b59a,
+    0 160px 0 #c4b59a,
+    0 200px 0 #c4b59a,
+    0 240px 0 #c4b59a,
+    0 280px 0 #c4b59a,
+    0 320px 0 #c4b59a,
+    0 360px 0 #c4b59a,
+    0 400px 0 #c4b59a;
+}
+
+/* 다이어리 헤더 */
+.diary-header {
+  background: linear-gradient(135deg, #f0e6d2 0%, #e8dcc0 100%);
+  border-bottom: 2px solid #d4c4a8;
+  padding: 20px 40px 20px 60px;
+  text-align: center;
+  position: relative;
+}
+
+.diary-title {
+  font-family: 'Caveat', cursive;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #8b7355;
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(139, 115, 85, 0.3);
+}
+
+.diary-date {
+  font-family: 'Kalam', cursive;
+  font-size: 1.1rem;
+  color: #a68b5b;
+  margin-top: 8px;
+  font-weight: 400;
+}
+
+/* 다이어리 컨텐츠 */
+.diary-content {
+  padding: 30px 40px 30px 60px;
+  line-height: 1.8;
+  font-size: 1.1rem;
+}
+
+/* 손글씨 스타일 */
+.handwriting {
+  font-family: 'Kalam', cursive;
+  font-weight: 400;
+}
+
+/* 다이어리 버튼 */
+.diary-button {
+  background: linear-gradient(135deg, #e8dcc0 0%, #d4c4a8 100%);
+  border: 2px solid #c4b59a;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  color: #5d4e37;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(93, 78, 55, 0.2);
+}
+
+.diary-button:hover {
+  background: linear-gradient(135deg, #d4c4a8 0%, #c4b59a 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(93, 78, 55, 0.3);
+}
+
+.diary-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(93, 78, 55, 0.2);
+}
+
+/* 다이어리 입력 필드 */
+.diary-input {
+  background: #fefcf7;
+  border: 2px solid #e8dcc0;
+  border-radius: 8px;
+  padding: 15px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.1rem;
+  color: #5d4e37;
+  width: 100%;
+  transition: border-color 0.3s ease;
+}
+
+.diary-input:focus {
+  outline: none;
+  border-color: #c4b59a;
+  box-shadow: 0 0 0 3px rgba(196, 181, 154, 0.2);
+}
+
+.diary-textarea {
+  background: #fefcf7;
+  border: 2px solid #e8dcc0;
+  border-radius: 8px;
+  padding: 15px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.1rem;
+  color: #5d4e37;
+  width: 100%;
+  min-height: 200px;
+  resize: vertical;
+  line-height: 1.6;
+  transition: border-color 0.3s ease;
+}
+
+.diary-textarea:focus {
+  outline: none;
+  border-color: #c4b59a;
+  box-shadow: 0 0 0 3px rgba(196, 181, 154, 0.2);
+}
+
+/* 스티커 효과 */
+.sticker {
+  position: absolute;
+  background: #ffd1dc;
+  border: 2px solid #ffb3c6;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 2px 4px rgba(255, 179, 198, 0.3);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+/* 페이지 넘김 효과 */
+.page-turn {
+  position: relative;
+  overflow: hidden;
+}
+
+.page-turn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 100%;
+  background: linear-gradient(to left, 
+    rgba(212, 196, 168, 0.8) 0%, 
+    transparent 100%);
+  pointer-events: none;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .diary-page {
+    margin: 10px;
+    max-width: none;
+  }
+  
+  .diary-header {
+    padding: 15px 20px 15px 40px;
+  }
+  
+  .diary-title {
+    font-size: 2rem;
+  }
+  
+  .diary-content {
+    padding: 20px 20px 20px 40px;
+  }
+  
+  .diary-page::before {
+    left: 20px;
+  }
+  
+  .diary-page::after {
+    left: 15px;
+  }
+}

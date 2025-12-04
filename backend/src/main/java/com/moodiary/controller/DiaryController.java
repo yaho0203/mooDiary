@@ -1,7 +1,6 @@
 package com.moodiary.controller;
 
 import com.moodiary.dto.DiaryDto;
-import com.moodiary.entity.UserUserDetails;
 import com.moodiary.service.DiaryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,8 +14,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -77,25 +74,6 @@ public class DiaryController {
     private final DiaryService diaryService;
 
     /**
-     * 현재 인증된 사용자 ID 가져오기
-     * JWT 토큰에서 사용자 정보를 추출합니다.
-     *
-     * @return 사용자 ID, 인증되지 않은 경우 null
-     */
-    private Long getCurrentUserId() {
-        try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null && auth.getPrincipal() instanceof UserUserDetails) {
-                UserUserDetails userDetails = (UserUserDetails) auth.getPrincipal();
-                return userDetails.getUser().getId();
-            }
-        } catch (Exception e) {
-            log.warn("사용자 인증 정보를 가져올 수 없습니다: {}", e.getMessage());
-        }
-        return null;
-    }
-
-    /**
      * 일기 작성 API
      *
      * 사용자가 새로운 일기를 작성하고 OpenAI API를 통한 감정 분석을 수행합니다.
@@ -122,13 +100,8 @@ public class DiaryController {
     @PostMapping
     @Operation(summary = "일기 작성", description = "새로운 일기를 작성합니다.")
     public ResponseEntity<?> createDiary(
+            @Parameter(description = "사용자 ID") @RequestParam Long userId,
             @RequestBody DiaryDto.CreateDiaryRequest request) {
-
-        // JWT 토큰에서 현재 사용자 ID 가져오기
-        Long userId = getCurrentUserId();
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증이 필요합니다.");
-        }
 
         log.info("일기 작성 요청 - 사용자: {}, 내용: {}", userId, request.getContent());
         try {
@@ -169,14 +142,9 @@ public class DiaryController {
     @PostMapping(value = "/with-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "이미지와 함께 일기 작성", description = "이미지 파일을 업로드하면서 일기를 작성합니다.")
     public ResponseEntity<?> createDiaryWithImage(
+            @Parameter(description = "사용자 ID") @RequestParam Long userId,
             @Parameter(description = "일기 내용") @RequestParam String content,
             @Parameter(description = "이미지 파일") @RequestPart("image") MultipartFile imageFile) {
-        
-        // JWT 토큰에서 현재 사용자 ID 가져오기
-        Long userId = getCurrentUserId();
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증이 필요합니다.");
-        }
         
         log.info("이미지와 함께 일기 작성 요청 - 사용자: {}, 내용: {}, 파일명: {}", 
             userId, content, imageFile.getOriginalFilename());
@@ -282,23 +250,13 @@ public class DiaryController {
      */
     @GetMapping("/{diaryId}")
     @Operation(summary = "일기 상세 조회", description = "특정 일기의 상세 내용을 조회합니다.")
-    public ResponseEntity<?> getDiary(
+    public ResponseEntity<DiaryDto.DiaryResponse> getDiary(
+            @Parameter(description = "사용자 ID") @RequestParam Long userId,
             @Parameter(description = "일기 ID") @PathVariable Long diaryId) {
 
-        // JWT 토큰에서 현재 사용자 ID 가져오기
-        Long userId = getCurrentUserId();
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증이 필요합니다.");
-        }
-
         log.info("일기 상세 조회 요청 - 사용자: {}, 일기: {}", userId, diaryId);
-        try {
-            DiaryDto.DiaryResponse response = diaryService.getDiary(userId, diaryId);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            log.error("일기 상세 조회 실패: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        DiaryDto.DiaryResponse response = diaryService.getDiary(userId, diaryId);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -319,12 +277,8 @@ public class DiaryController {
     @GetMapping
     @Operation(summary = "사용자별 일기 목록 (쿼리 파라미터)", description = "특정 사용자의 일기 목록을 페이징하여 조회합니다.")
     public ResponseEntity<Page<DiaryDto.DiaryResponse>> getUserDiariesByQuery(
+            @Parameter(description = "사용자 ID") @RequestParam Long userId,
             @PageableDefault(size = 10, sort = "createdAt") Pageable pageable) {
-
-        Long userId = getCurrentUserId();
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
 
         log.info("사용자별 일기 목록 조회 요청 (쿼리 파라미터) - 사용자: {}, 페이지: {}", userId, pageable.getPageNumber());
         Page<DiaryDto.DiaryResponse> response = diaryService.getUserDiaries(userId, pageable);
@@ -351,16 +305,11 @@ public class DiaryController {
      * @author hyeonSuKim
      * @since 2025-09-21
      */
-    @GetMapping("/user")
-    @Operation(summary = "사용자별 일기 목록", description = "현재 사용자의 일기 목록을 페이징하여 조회합니다.")
-    public ResponseEntity<?> getUserDiaries(
+    @GetMapping("/user/{userId}")
+    @Operation(summary = "사용자별 일기 목록", description = "특정 사용자의 일기 목록을 페이징하여 조회합니다.")
+    public ResponseEntity<Page<DiaryDto.DiaryResponse>> getUserDiaries(
+            @Parameter(description = "사용자 ID") @PathVariable Long userId,
             @PageableDefault(size = 10, sort = "createdAt") Pageable pageable) {
-
-        // JWT 토큰에서 현재 사용자 ID 가져오기
-        Long userId = getCurrentUserId();
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
 
         log.info("사용자별 일기 목록 조회 요청 - 사용자: {}, 페이지: {}", userId, pageable.getPageNumber());
         Page<DiaryDto.DiaryResponse> response = diaryService.getUserDiaries(userId, pageable);
@@ -455,24 +404,14 @@ public class DiaryController {
      */
     @PutMapping("/{diaryId}")
     @Operation(summary = "일기 수정", description = "기존 일기를 수정합니다.")
-    public ResponseEntity<?> updateDiary(
+    public ResponseEntity<DiaryDto.DiaryResponse> updateDiary(
+            @Parameter(description = "사용자 ID") @RequestParam Long userId,
             @Parameter(description = "일기 ID") @PathVariable Long diaryId,
             @RequestBody DiaryDto.UpdateDiaryRequest request) {
 
-        // JWT 토큰에서 현재 사용자 ID 가져오기
-        Long userId = getCurrentUserId();
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증이 필요합니다.");
-        }
-
         log.info("일기 수정 요청 - 사용자: {}, 일기: {}", userId, diaryId);
-        try {
-            DiaryDto.DiaryResponse response = diaryService.updateDiary(userId, diaryId, request);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            log.error("일기 수정 실패: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        DiaryDto.DiaryResponse response = diaryService.updateDiary(userId, diaryId, request);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -499,12 +438,8 @@ public class DiaryController {
     @DeleteMapping("/{diaryId}")
     @Operation(summary = "일기 삭제", description = "기존 일기를 삭제합니다.")
     public ResponseEntity<Void> deleteDiary(
+            @Parameter(description = "사용자 ID") @RequestParam Long userId,
             @Parameter(description = "일기 ID") @PathVariable Long diaryId) {
-
-        Long userId = getCurrentUserId();
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
 
         log.info("일기 삭제 요청 - 사용자: {}, 일기: {}", userId, diaryId);
         diaryService.deleteDiary(userId, diaryId);
@@ -537,23 +472,13 @@ public class DiaryController {
      */
     @GetMapping("/{diaryId}/analysis")
     @Operation(summary = "일기 감정 분석 결과", description = "특정 일기의 감정 분석 결과를 조회합니다.")
-    public ResponseEntity<?> getDiaryAnalysis(
+    public ResponseEntity<DiaryDto.EmotionAnalysisResponse> getDiaryAnalysis(
+            @Parameter(description = "사용자 ID") @RequestParam Long userId,
             @Parameter(description = "일기 ID") @PathVariable Long diaryId) {
 
-        // JWT 토큰에서 현재 사용자 ID 가져오기
-        Long userId = getCurrentUserId();
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증이 필요합니다.");
-        }
-
         log.info("일기 감정 분석 결과 조회 요청 - 사용자: {}, 일기: {}", userId, diaryId);
-        try {
-            DiaryDto.EmotionAnalysisResponse response = diaryService.getDiaryAnalysis(userId, diaryId);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            log.error("일기 감정 분석 결과 조회 실패: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        DiaryDto.EmotionAnalysisResponse response = diaryService.getDiaryAnalysis(userId, diaryId);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -583,12 +508,8 @@ public class DiaryController {
     @GetMapping("/{diaryId}/summary")
     @Operation(summary = "일기 분석 요약", description = "특정 일기의 분석 결과 요약을 조회합니다.")
     public ResponseEntity<DiaryDto.AnalysisSummaryResponse> getDiaryAnalysisSummary(
+            @Parameter(description = "사용자 ID") @RequestParam Long userId,
             @Parameter(description = "일기 ID") @PathVariable Long diaryId) {
-
-        Long userId = getCurrentUserId();
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
 
         log.info("일기 분석 요약 조회 요청 - 사용자: {}, 일기: {}", userId, diaryId);
         DiaryDto.AnalysisSummaryResponse response = diaryService.getDiaryAnalysisSummary(userId, diaryId);
