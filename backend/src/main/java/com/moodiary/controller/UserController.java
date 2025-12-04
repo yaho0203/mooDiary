@@ -43,30 +43,56 @@ public class UserController {
     @PostMapping("/login")
     @Operation(summary = "로그인", description = "이메일과 비밀번호로 로그인합니다")
     public ResponseEntity<?> userLogin(@Valid @RequestBody UserDto.LoginRequest loginRequest) {
-        UserDto.TokenResponse tokenResponse = userService.userLogin(loginRequest);
+        try {
+            UserDto.TokenResponse tokenResponse = userService.userLogin(loginRequest);
+            
+            // 사용자 정보를 가져와서 함께 반환
+            User user = userRepository.findByEmail(loginRequest.getEmail())
+                    .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
+            UserDto.UserResponse userResponse = UserDto.UserResponse.builder()
+                    .id(user.getId())
+                    .email(user.getEmail())
+                    .nickname(user.getNickname())
+                    .profileImage(user.getProfileImage())
+                    .createdAt(user.getCreatedAt())
+                    .updatedAt(user.getUpdatedAt())
+                    .build();
+            
+            // 토큰과 사용자 정보를 함께 반환
+            UserDto.LoginResponse loginResponse = UserDto.LoginResponse.builder()
+                    .accessToken(tokenResponse.getAccessToken())
+                    .refreshToken(tokenResponse.getRefreshToken())
+                    .tokenType(tokenResponse.getTokenType())
+                    .expiresIn(tokenResponse.getExpiresIn())
+                    .user(userResponse)
+                    .build();
+            
+            return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(
+                    new ErrorResponse(e.getMessage()),
+                    HttpStatus.BAD_REQUEST
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(
+                    new ErrorResponse("로그인 중 오류가 발생했습니다: " + e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+    
+    // 에러 응답을 위한 내부 클래스
+    private static class ErrorResponse {
+        private String message;
         
-        // 사용자 정보를 가져와서 함께 반환
-        User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
-        UserDto.UserResponse userResponse = UserDto.UserResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .nickname(user.getNickname())
-                .profileImage(user.getProfileImage())
-                .createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdatedAt())
-                .build();
+        public ErrorResponse(String message) {
+            this.message = message;
+        }
         
-        // 토큰과 사용자 정보를 함께 반환
-        UserDto.LoginResponse loginResponse = UserDto.LoginResponse.builder()
-                .accessToken(tokenResponse.getAccessToken())
-                .refreshToken(tokenResponse.getRefreshToken())
-                .tokenType(tokenResponse.getTokenType())
-                .expiresIn(tokenResponse.getExpiresIn())
-                .user(userResponse)
-                .build();
-        
-        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+        public String getMessage() {
+            return message;
+        }
     }
 
 

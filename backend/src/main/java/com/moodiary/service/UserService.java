@@ -1,6 +1,7 @@
 package com.moodiary.service;
 
 import com.moodiary.dto.UserDto;
+import com.moodiary.entity.Role;
 import com.moodiary.entity.User;
 import com.moodiary.jwt.JwtTokenFilter;
 import com.moodiary.jwt.JwtTokenProvider;
@@ -67,12 +68,33 @@ public class UserService {
     public UserDto.TokenResponse userLogin(UserDto.@Valid LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자 입니다"));
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        // 비밀번호가 없는 경우 (소셜 로그인 사용자)
+        if (user.getPassword() == null) {
+            throw new IllegalStateException("소셜 로그인으로 가입된 계정입니다. 소셜 로그인을 이용해주세요.");
+        }
+
+        // 비밀번호 앞뒤 공백 제거
+        String inputPassword = loginRequest.getPassword() != null ? loginRequest.getPassword().trim() : "";
+        String storedPassword = user.getPassword();
+        
+        // 디버깅을 위한 로그 (프로덕션에서는 제거)
+        System.out.println("로그인 시도 - 이메일: " + loginRequest.getEmail());
+        System.out.println("저장된 비밀번호 형식: " + (storedPassword != null && storedPassword.length() > 0 ? storedPassword.substring(0, Math.min(20, storedPassword.length())) + "..." : "null"));
+        
+        if (!passwordEncoder.matches(inputPassword, storedPassword)) {
             throw new IllegalStateException("비밀번호가 일치하지 않습니다.");
         }
 
-        String accessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail(), user.getRole());
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getId(), user.getEmail(), user.getRole());
+        // 역할이 null인 경우 기본값으로 USER 설정하고 DB에 저장
+        Role userRole = user.getRole();
+        if (userRole == null) {
+            userRole = Role.USER;
+            user.setRole(userRole);
+            userRepository.save(user);
+        }
+
+        String accessToken = jwtTokenProvider.createToken(user.getId(), user.getEmail(), userRole);
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getId(), user.getEmail(), userRole);
 
         UserDto.TokenResponse tokenResponse = UserDto.TokenResponse.builder()
                 .accessToken(accessToken)

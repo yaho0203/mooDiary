@@ -81,17 +81,27 @@ public class MainService {
      * DiaryEntry → DiaryResponse 변환 공통 메서드
      */
     private DiaryResponse toDiaryResponse(DiaryEntry diaryEntry) {
-        String summaryTitle = diaryEntry.getContent().length() > 30
-                ? diaryEntry.getContent().substring(0, 30) + "..."
-                : diaryEntry.getContent();
+        String content = diaryEntry.getContent();
+        if (content == null) {
+            content = "";
+        }
+        
+        String summaryTitle = content.length() > 30
+                ? content.substring(0, 30) + "..."
+                : content;
 
         EmotionType emotion = diaryEntry.getIntegratedEmotion();
+        
+        Long userId = null;
+        if (diaryEntry.getUser() != null) {
+            userId = diaryEntry.getUser().getId();
+        }
 
         return DiaryResponse.builder()
                 .id(diaryEntry.getId())
-                .userId(diaryEntry.getUser().getId()) // userId 직접 가져오기
+                .userId(userId)
                 .content(summaryTitle)
-                .imageUrl(null)
+                .imageUrl(diaryEntry.getImageUrl())
                 .emotionAnalysis(
                         DiaryDto.EmotionAnalysisResponse.builder()
                                 .integratedEmotion(
@@ -110,10 +120,29 @@ public class MainService {
      * 로그인 사용자 ID 가져오기 (임시)
      */
     private Long getCurrentUserId() {
-        // TODO: SecurityContextHolder or JwtUserDetails 활용
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserUserDetails userDetails = (UserUserDetails) auth.getPrincipal();
-        Long userId = userDetails.getUser().getId();
-        return userId;
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null || auth.getPrincipal() == null) {
+                throw new IllegalStateException("인증 정보가 없습니다.");
+            }
+            
+            if (!(auth.getPrincipal() instanceof UserUserDetails)) {
+                throw new IllegalStateException("인증 정보 형식이 올바르지 않습니다.");
+            }
+            
+            UserUserDetails userDetails = (UserUserDetails) auth.getPrincipal();
+            if (userDetails.getUser() == null) {
+                throw new IllegalStateException("사용자 정보가 없습니다.");
+            }
+            
+            Long userId = userDetails.getUser().getId();
+            if (userId == null) {
+                throw new IllegalStateException("사용자 ID가 없습니다.");
+            }
+            
+            return userId;
+        } catch (ClassCastException e) {
+            throw new IllegalStateException("인증 정보를 가져오는 중 오류가 발생했습니다: " + e.getMessage(), e);
+        }
     }
 }

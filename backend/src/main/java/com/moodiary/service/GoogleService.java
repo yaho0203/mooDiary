@@ -1,20 +1,21 @@
 package com.moodiary.service;
 
-import com.moodiary.entity.SocialType;
-import com.moodiary.entity.User;
-import com.moodiary.repository.UserRepository;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.util.Map;
+import com.moodiary.repository.UserRepository;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+// OAuth2 비활성화로 인해 주석 처리
+// import com.moodiary.entity.SocialType;
+// import com.moodiary.entity.User;
+// import java.util.Map;
 
 @Service
 @Transactional
@@ -27,39 +28,14 @@ public class GoogleService extends SimpleUrlAuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-//        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
-//        OAuth2User oAuth2User = oauthToken.getPrincipal();
-//
-//        String providerId = oAuth2User.getAttribute("sub");
-//        String email = oAuth2User.getAttribute("email");
-//        String name = oAuth2User.getAttribute("name");
-//        String picture = oAuth2User.getAttribute("picture");
-//
-//
-//
-//        User user = userRepository.findByProviderId(providerId).orElse(null);
-//
-//        if (user == null) {
-//            user = User.builder()
-//                    .nickname(name)
-//                    .email(email)
-//                    .socialType(SocialType.GOOGLE)
-//                    .providerId(providerId)
-//                    .profileImage(picture)
-//                    .build();
-//
-//            userRepository.save(user);
-//            Long memberId = user.getId();
-//            response.sendRedirect("http://localhost:3000/member/login/google/create?member=33068080" + memberId);
-//
-//        } else {
-//            Long memberId = user.getId();
-//            response.sendRedirect("http://localhost:3000/member/login/google/present?member=30006397"+memberId);
-//        }
-
+        // OAuth2 비활성화로 인해 메서드 비활성화
+        // OAuth2가 비활성화되어 있으므로 이 메서드는 호출되지 않습니다.
+        response.sendRedirect("http://localhost:5173/login?error=oauth2_disabled");
+        
+        /* OAuth2 관련 코드 주석 처리
         OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
         OAuth2User oAuth2User = oauthToken.getPrincipal();
-// 어떤 소셜인지 가져오기
+        // 어떤 소셜인지 가져오기
         String registrationId = oauthToken.getAuthorizedClientRegistrationId(); // google, kakao, naver
         SocialType socialType = SocialType.valueOf(registrationId.toUpperCase());
         String providerId = null;
@@ -120,8 +96,7 @@ public class GoogleService extends SimpleUrlAuthenticationSuccessHandler {
             }
         }
 
-
-// providerId가 없으면 로그인 실패 처리
+        // providerId가 없으면 로그인 실패 처리
         if (providerId == null) {
             response.sendRedirect("http://localhost:5173/login?error=invalid_provider_id");
             return;
@@ -147,8 +122,7 @@ public class GoogleService extends SimpleUrlAuthenticationSuccessHandler {
         } else {
             response.sendRedirect("http://localhost:5173/member/login/present?member=80803306" + user.getId());
         }
-
-
+        */
     }
 
 }

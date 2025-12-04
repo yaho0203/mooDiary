@@ -1,63 +1,39 @@
-# Dependencies
-node_modules/
+# Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Production builds
-/frontend/build
-/frontend/dist
+node_modules
+dist
+dist-ssr
+*.local
 
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# Logs
-*.log
+.config/
+!.env
+.vercel
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-
-# Java
-*.class
-*.jar
-*.war
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# Spring Boot
-target/
-!gradle/wrapper/gradle-wrapper.jar
-
-# Database
-*.db
-*.sqlite
-
-# Uploads
-uploads/
-
-# 민감한 설정 파일들
-backend/src/main/resources/application.yml
+# Backend build directories
+backend/bin/
 backend/build/
-backend/.gradle/
+backend/out/
+backend/uploads/
+
+# Application configuration with sensitive data
+backend/src/main/resources/application.yml
+backend/bin/main/application.yml
+backend/build/resources/main/application.yml

@@ -150,21 +150,54 @@ public class DiaryService {
 
             // 이미지 감정 분석 (이미지가 있는 경우에만 수행)
             if (request.getImageUrl() != null && !request.getImageUrl().trim().isEmpty()) {
-                imageAnalysis = openAiService.analyzeImageEmotion(request.getImageUrl());
-                log.info("이미지 감정 분석 완료 - 감정: {}, 점수: {}", 
-                    imageAnalysis.getEmotion(), imageAnalysis.getScore());
+                try {
+                    imageAnalysis = openAiService.analyzeImageEmotion(request.getImageUrl());
+                    if (imageAnalysis != null) {
+                        log.info("이미지 감정 분석 완료 - 감정: {}, 점수: {}", 
+                            imageAnalysis.getEmotion(), imageAnalysis.getScore());
+                    } else {
+                        log.warn("이미지 감정 분석이 null을 반환했습니다. 텍스트 분석 결과를 사용합니다.");
+                    }
+                } catch (Exception e) {
+                    log.warn("이미지 감정 분석 실패: {}. 텍스트 분석 결과를 사용합니다.", e.getMessage());
+                    imageAnalysis = null;
+                }
             }
 
             // 통합 감정 분석 (텍스트 또는 이미지가 있는 경우)
             if (textAnalysis != null || imageAnalysis != null) {
                 if (textAnalysis != null && imageAnalysis != null) {
                     // 텍스트와 이미지 모두 있는 경우에만 통합 분석 수행
-                    integratedAnalysis = openAiService.analyzeIntegratedEmotion(
-                        request.getContent() != null ? request.getContent() : "",
-                        request.getImageUrl() != null ? request.getImageUrl() : ""
-                    );
-                    log.info("통합 감정 분석 완료 - 감정: {}, 점수: {}", 
-                        integratedAnalysis.getEmotion(), integratedAnalysis.getScore());
+                    try {
+                        integratedAnalysis = openAiService.analyzeIntegratedEmotion(
+                            request.getContent() != null ? request.getContent() : "",
+                            request.getImageUrl() != null ? request.getImageUrl() : ""
+                        );
+                        if (integratedAnalysis != null) {
+                            log.info("통합 감정 분석 완료 - 감정: {}, 점수: {}", 
+                                integratedAnalysis.getEmotion(), integratedAnalysis.getScore());
+                        } else {
+                            log.warn("통합 감정 분석이 null을 반환했습니다. 텍스트 분석 결과를 사용합니다.");
+                            // 통합 분석 실패 시 텍스트 분석 결과 사용
+                            integratedAnalysis = OpenAiService.EmotionAnalysisResult.builder()
+                                .emotion(textAnalysis.getEmotion())
+                                .score(textAnalysis.getScore())
+                                .confidence(textAnalysis.getConfidence())
+                                .keywords(textAnalysis.getKeywords())
+                                .build();
+                        }
+                    } catch (Exception e) {
+                        log.warn("통합 감정 분석 실패: {}. 텍스트 분석 결과를 사용합니다.", e.getMessage());
+                        // 통합 분석 실패 시 텍스트 분석 결과 사용
+                        integratedAnalysis = OpenAiService.EmotionAnalysisResult.builder()
+                            .emotion(textAnalysis.getEmotion())
+                            .score(textAnalysis.getScore())
+                            .confidence(textAnalysis.getConfidence())
+                            .keywords(textAnalysis.getKeywords())
+                            .build();
+                        log.info("통합 분석 실패 후 텍스트 분석 결과 사용 - 감정: {}, 점수: {}", 
+                            integratedAnalysis.getEmotion(), integratedAnalysis.getScore());
+                    }
                 } else if (textAnalysis != null) {
                     // 텍스트만 있는 경우 텍스트 분석 결과를 통합 결과로 사용
                     integratedAnalysis = OpenAiService.EmotionAnalysisResult.builder()
@@ -212,6 +245,10 @@ public class DiaryService {
 
         DiaryEntry savedEntry = diaryRepository.save(diaryEntry);
         log.info("일기 작성 완료 - 일기 ID: {}, 사용자 ID: {}", savedEntry.getId(), userId);
+        log.info("최종 저장된 감정 분석 결과 - 텍스트: {} ({}도), 이미지: {} ({}도), 통합: {} ({}도)", 
+            savedEntry.getTextEmotion(), savedEntry.getTextEmotionScore(),
+            savedEntry.getFacialEmotion(), savedEntry.getFacialEmotionScore(),
+            savedEntry.getIntegratedEmotion(), savedEntry.getIntegratedEmotionScore());
 
         return convertToResponse(savedEntry);
     }
@@ -278,21 +315,52 @@ public class DiaryService {
 
                 // 이미지 감정 분석 (이미지가 있는 경우에만 수행)
                 if (request.getImageUrl() != null && !request.getImageUrl().trim().isEmpty()) {
-                    imageAnalysis = openAiService.analyzeImageEmotion(request.getImageUrl());
-                    log.info("이미지 감정 분석 완료 - 감정: {}, 점수: {}", 
-                        imageAnalysis.getEmotion(), imageAnalysis.getScore());
+                    try {
+                        imageAnalysis = openAiService.analyzeImageEmotion(request.getImageUrl());
+                        if (imageAnalysis != null) {
+                            log.info("이미지 감정 분석 완료 - 감정: {}, 점수: {}", 
+                                imageAnalysis.getEmotion(), imageAnalysis.getScore());
+                        } else {
+                            log.warn("이미지 감정 분석이 null을 반환했습니다. 텍스트 분석 결과를 사용합니다.");
+                        }
+                    } catch (Exception e) {
+                        log.warn("이미지 감정 분석 실패: {}. 텍스트 분석 결과를 사용합니다.", e.getMessage());
+                        imageAnalysis = null;
+                    }
                 }
 
                 // 통합 감정 분석 (텍스트 또는 이미지가 있는 경우)
                 if (textAnalysis != null || imageAnalysis != null) {
                     if (textAnalysis != null && imageAnalysis != null) {
                         // 텍스트와 이미지 모두 있는 경우에만 통합 분석 수행
-                        integratedAnalysis = openAiService.analyzeIntegratedEmotion(
-                            request.getContent() != null ? request.getContent() : "",
-                            request.getImageUrl() != null ? request.getImageUrl() : ""
-                        );
-                        log.info("통합 감정 분석 완료 - 감정: {}, 점수: {}", 
-                            integratedAnalysis.getEmotion(), integratedAnalysis.getScore());
+                        try {
+                            integratedAnalysis = openAiService.analyzeIntegratedEmotion(
+                                request.getContent() != null ? request.getContent() : "",
+                                request.getImageUrl() != null ? request.getImageUrl() : ""
+                            );
+                            if (integratedAnalysis != null) {
+                                log.info("통합 감정 분석 완료 - 감정: {}, 점수: {}", 
+                                    integratedAnalysis.getEmotion(), integratedAnalysis.getScore());
+                            } else {
+                                log.warn("통합 감정 분석이 null을 반환했습니다. 텍스트 분석 결과를 사용합니다.");
+                                // 통합 분석 실패 시 텍스트 분석 결과 사용
+                                integratedAnalysis = OpenAiService.EmotionAnalysisResult.builder()
+                                    .emotion(textAnalysis.getEmotion())
+                                    .score(textAnalysis.getScore())
+                                    .confidence(textAnalysis.getConfidence())
+                                    .keywords(textAnalysis.getKeywords())
+                                    .build();
+                            }
+                        } catch (Exception e) {
+                            log.warn("통합 감정 분석 실패: {}. 텍스트 분석 결과를 사용합니다.", e.getMessage());
+                            // 통합 분석 실패 시 텍스트 분석 결과 사용
+                            integratedAnalysis = OpenAiService.EmotionAnalysisResult.builder()
+                                .emotion(textAnalysis.getEmotion())
+                                .score(textAnalysis.getScore())
+                                .confidence(textAnalysis.getConfidence())
+                                .keywords(textAnalysis.getKeywords())
+                                .build();
+                        }
                     } else if (textAnalysis != null) {
                         // 텍스트만 있는 경우 텍스트 분석 결과를 통합 결과로 사용
                         integratedAnalysis = OpenAiService.EmotionAnalysisResult.builder()

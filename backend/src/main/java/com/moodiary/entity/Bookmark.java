@@ -35,6 +35,7 @@ public class Bookmark {
     @JoinColumn(name = "Diary", nullable = false)
     private DiaryEntry diaryEntry;
 
+    @Builder.Default
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 

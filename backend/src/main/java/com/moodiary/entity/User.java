@@ -71,18 +71,23 @@ public class User {
 
     // 연관관계
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<DiaryEntry> diaryEntries = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<CommunityPost> communityPosts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<CommunityComment> communityComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<RecommendContent> recommendContents = new ArrayList<>(); // 사용자가 만든 추천 컨텐츠 추가
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Bookmark> bookmarks = new ArrayList<>();
 
     // Update methods
