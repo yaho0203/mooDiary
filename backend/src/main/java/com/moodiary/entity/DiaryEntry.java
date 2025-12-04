@@ -35,6 +35,7 @@ public class DiaryEntry {
     private String imageUrl;
 
     @OneToMany(mappedBy = "diaryEntry", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Bookmark> bookmarks = new ArrayList<>();
 
 

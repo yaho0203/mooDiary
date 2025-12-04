@@ -35,12 +35,15 @@ public class CommunityPost {
     private EmotionType emotionType;
     
     @Column(name = "is_anonymous", nullable = false)
+    @Builder.Default
     private Boolean isAnonymous = false;
     
     @Column(name = "like_count")
+    @Builder.Default
     private Integer likeCount = 0;
     
     @Column(name = "comment_count")
+    @Builder.Default
     private Integer commentCount = 0;
     
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -49,5 +52,6 @@ public class CommunityPost {
     
     // 연관관계
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<CommunityComment> comments = new ArrayList<>();
 }
