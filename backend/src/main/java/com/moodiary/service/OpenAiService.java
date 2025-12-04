@@ -117,7 +117,10 @@ public class OpenAiService {
                  다음 JSON 형식으로만 응답하세요:
                  {
                    "emotion": "감정명",
-                   "description": "텍스트의 감정과 내용에 대한 설명"
+                   "score": 감정점수,
+                   "confidence": 신뢰도,
+                   "description": "텍스트의 감정과 내용에 대한 설명",
+                   "keywords": "주요 키워드들을 쉼표로 구분"
                  }
                  
                  감정명은 다음 중 하나를 선택하세요:
@@ -132,6 +135,9 @@ public class OpenAiService {
                  - satisfied (만족)
                  - disappointed (실망)
                  - neutral (중립)
+                 
+                 감정점수(score)는 0(매우 부정적)부터 100(매우 긍정적)까지의 숫자로 표현하세요.
+                 신뢰도(confidence)는 0(낮음)부터 100(높음)까지의 숫자로 표현하세요.
                  """, text);
 
             log.info("생성된 프롬프트: {}", prompt);
@@ -206,7 +212,10 @@ public class OpenAiService {
                 다음 JSON 형식으로만 응답하세요:
                 {
                   "emotion": "감정명",
-                  "description": "표정과 분위기에 대한 설명"
+                  "score": 감정점수,
+                  "confidence": 신뢰도,
+                  "description": "표정과 분위기에 대한 설명",
+                  "keywords": "주요 키워드들을 쉼표로 구분"
                 }
                 
                 감정명은 다음 중 하나를 선택하세요:
@@ -221,6 +230,9 @@ public class OpenAiService {
                 - satisfied (만족)
                 - disappointed (실망)
                 - neutral (중립)
+                
+                감정점수(score)는 0(매우 부정적)부터 100(매우 긍정적)까지의 숫자로 표현하세요.
+                신뢰도(confidence)는 0(낮음)부터 100(높음)까지의 숫자로 표현하세요.
                 """, imageUrl);
 
             log.info("=== OpenAI Vision API 호출 시작 ===");
@@ -292,7 +304,10 @@ public class OpenAiService {
                 다음 JSON 형식으로만 응답하세요:
                 {
                   "emotion": "감정명",
-                  "description": "텍스트와 이미지를 종합한 감정 분석 설명"
+                  "score": 감정점수,
+                  "confidence": 신뢰도,
+                  "description": "텍스트와 이미지를 종합한 감정 분석 설명",
+                  "keywords": "주요 키워드들을 쉼표로 구분"
                 }
                 
                 감정명은 다음 중 하나를 선택하세요:
@@ -307,6 +322,9 @@ public class OpenAiService {
                 - satisfied (만족)
                 - disappointed (실망)
                 - neutral (중립)
+                
+                감정점수(score)는 0(매우 부정적)부터 100(매우 긍정적)까지의 숫자로 표현하세요.
+                신뢰도(confidence)는 0(낮음)부터 100(높음)까지의 숫자로 표현하세요.
                 """, text);
 
             // 이미지를 Base64로 변환하여 Vision API 사용
@@ -547,42 +565,60 @@ public class OpenAiService {
             double confidence = 0.0;
             String keywords = "";
             
-            // 1. 새로운 형식 처리: {"emotion": "neutral", "description": "..."}
+            // 1. 새로운 형식 처리: {"emotion": "neutral", "score": 50, "confidence": 80, "description": "...", "keywords": "..."}
             if (emotionNode.has("emotion")) {
                 emotion = emotionNode.path("emotion").asText();
-                score = 50.0; // 중립 감정의 경우 기본 점수
-                confidence = 80.0; // 기본 신뢰도
-                keywords = emotionNode.path("description").asText();
                 
-                   // 감정에 따른 점수 조정
-                   switch (emotion.toLowerCase()) {
-                       case "happy", "행복", "joyful", "기쁨":
-                           score = 85.0;
-                           break;
-                       case "sad", "슬픔", "depressed", "우울":
-                           score = 20.0;
-                           break;
-                       case "angry", "분노", "화남", "frustrated", "좌절":
-                           score = 15.0;
-                           break;
-                       case "neutral", "중립":
-                           score = 50.0;
-                           break;
-                       case "anxious", "불안":
-                           score = 30.0;
-                           break;
-                       case "satisfied", "만족":
-                           score = 80.0;
-                           break;
-                       case "disappointed", "실망":
-                           score = 25.0;
-                           break;
-                       case "calm", "평온":
-                           score = 70.0;
-                           break;
-                       default:
-                           score = 50.0;
-                   }
+                // OpenAI가 반환한 실제 점수와 신뢰도 사용 (없으면 기본값 사용)
+                if (emotionNode.has("score") && !emotionNode.path("score").isNull()) {
+                    score = emotionNode.path("score").asDouble();
+                } else {
+                    // 점수가 없는 경우에만 감정 타입에 따른 기본값 사용
+                    switch (emotion.toLowerCase()) {
+                        case "happy", "행복", "joyful", "기쁨":
+                            score = 85.0;
+                            break;
+                        case "sad", "슬픔", "depressed", "우울":
+                            score = 20.0;
+                            break;
+                        case "angry", "분노", "화남", "frustrated", "좌절":
+                            score = 15.0;
+                            break;
+                        case "neutral", "중립":
+                            score = 50.0;
+                            break;
+                        case "anxious", "불안":
+                            score = 30.0;
+                            break;
+                        case "satisfied", "만족":
+                            score = 80.0;
+                            break;
+                        case "disappointed", "실망":
+                            score = 25.0;
+                            break;
+                        case "calm", "평온":
+                            score = 70.0;
+                            break;
+                        default:
+                            score = 50.0;
+                    }
+                }
+                
+                // OpenAI가 반환한 실제 신뢰도 사용 (없으면 기본값 사용)
+                if (emotionNode.has("confidence") && !emotionNode.path("confidence").isNull()) {
+                    confidence = emotionNode.path("confidence").asDouble();
+                } else {
+                    confidence = 80.0; // 기본 신뢰도
+                }
+                
+                // 키워드 추출 (keywords 필드가 있으면 사용, 없으면 description 사용)
+                if (emotionNode.has("keywords") && !emotionNode.path("keywords").isNull()) {
+                    keywords = emotionNode.path("keywords").asText();
+                } else if (emotionNode.has("description") && !emotionNode.path("description").isNull()) {
+                    keywords = emotionNode.path("description").asText();
+                } else {
+                    keywords = "";
+                }
             }
             // 2. 기존 형식 처리: {"감정": {"행복": {"점수": 85, "신뢰도": 90}}}
             else if (emotionNode.has("감정")) {
