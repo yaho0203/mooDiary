@@ -16,6 +16,10 @@ java {
 }
 
 
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.incremental = false
+}
 
 tasks.withType(Test) {
     systemProperty 'file.encoding', 'UTF-8'
@@ -41,16 +45,18 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 //    implementation 'mysql:mysql-connector-java:8.0.33'
     implementation 'com.mysql:mysql-connector-j:9.0.0'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    // WebClient만 필요한 경우: spring-boot-starter-webflux 대신 spring-webflux만 추가
+    // 서블릿 스택(MVC)에서도 WebClient 사용 가능하며, OAuth2와 충돌하지 않음
+    implementation 'org.springframework:spring-webflux'
+    implementation 'io.projectreactor.netty:reactor-netty-http'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
-    // OAuth2 클라이언트 의존성 주석 처리 - 개발 중 OAuth2 로그인 페이지 방지
-    // 나중에 OAuth2 로그인을 사용할 때 주석 해제
-    // implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    // OAuth2 클라이언트 의존성 추가 (application.yml에 설정이 있으므로 필요)
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
-    
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 }
